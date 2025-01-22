@@ -1,19 +1,19 @@
-"use client"
+'use client';
 
-import { motion } from "framer-motion"
-import Link from "next/link"
-import Image from "next/image"
-import { Cormorant_Garamond, Waterfall } from 'next/font/google'
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Cormorant_Garamond, Waterfall } from 'next/font/google';
 
 const cormorantGaramond = Cormorant_Garamond({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700'],
-})
+});
 
 const waterfall = Waterfall({
   subsets: ['latin'],
   weight: ['400'],
-})
+});
 
 export default function Hero() {
   return (
@@ -26,9 +26,10 @@ export default function Hero() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            Creating a cutting-edge{' '}
-            <br></br>
-            <span className={`${waterfall.className} text-5xl md:text-9xl block mt-2`}>
+            Creating a cutting-edge <br></br>
+            <span
+              className={`${waterfall.className} text-5xl md:text-9xl block mt-2`}
+            >
               Virtual Ecosystem
             </span>
           </motion.h1>
@@ -39,7 +40,8 @@ export default function Hero() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            that accelerates innovation in biotech, bioengineering, and biomedical sciences
+            that accelerates innovation in biotech, bioengineering, and
+            biomedical sciences
           </motion.p>
           <motion.div
             className="space-y-4 md:space-y-0 md:space-x-4 flex flex-col md:flex-row"
@@ -72,5 +74,5 @@ export default function Hero() {
         />
       </div>
     </div>
-  )
+  );
 }

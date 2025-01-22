@@ -1,19 +1,20 @@
-import "./globals.css"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import Link from "next/link"
+import './globals.css';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import Link from 'next/link';
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "Bioverse",
-  description: "Accelerating innovation in biotech, bioengineering, and biomedical sciences",
-}
+  title: 'Bioverse',
+  description:
+    'Accelerating innovation in biotech, bioengineering, and biomedical sciences',
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
@@ -24,10 +25,17 @@ export default function RootLayout({
               Bioverse
             </Link>
             <ul className="flex space-x-4">
-              {["Ecosystem", "Our Approach", "Ideas", "Workflow", "Insights", "Contact Us"].map((item) => (
+              {[
+                'Ecosystem',
+                'Our Approach',
+                'Ideas',
+                'Workflow',
+                'Insights',
+                'Contact Us',
+              ].map((item) => (
                 <li key={item}>
                   <Link
-                    href={`/${item.toLowerCase().replace(" ", "-")}`}
+                    href={`/${item.toLowerCase().replace(' ', '-')}`}
                     className="hover:text-sea-green transition-colors"
                   >
                     {item}
@@ -40,6 +48,5 @@ export default function RootLayout({
         {children}
       </body>
     </html>
-  )
+  );
 }
-
