@@ -37,4 +37,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 # Bio-Verse
 
-# Bio-Verse
+## Development
+
+### Before Committing
+Before making a commit, please run the following command to ensure code formatting and linting:
+
+```bash
+make
