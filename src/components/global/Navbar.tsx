@@ -64,7 +64,7 @@ const Navbar = () => {
                       size="sm"
                       className="bg-sea-green text-white hover:bg-sea-green-600 hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:rotate-1 rounded-md px-4 py-2"
                     >
-                      Apply Now
+                      Sign Up
                     </Button>
                   </Link>
                 </div>
