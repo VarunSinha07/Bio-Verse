@@ -3,7 +3,7 @@
 all: format lint
 
 format:
-	npm run format
+	bun run format
 
 lint:
-	npm run lint
+	bun run lint
