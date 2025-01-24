@@ -57,7 +57,7 @@ const Navbar = () => {
                     <Button
                       variant="ghost"
                       size="lg"
-                      className="bg-gray-700 text-white border-gray-600 hover:bg-gray-600 hover:text-white hover:border-gray-500 hover:shadow-md transition-all duration-300 ease-in-out transform hover:scale-105"
+                      className="bg-gray-700 rounded-sm text-white border-gray-600 hover:bg-gray-600 hover:text-white hover:border-gray-500 hover:shadow-md transition-all duration-300 ease-in-out transform hover:scale-105"
                     >
                       Sign In
                     </Button>
@@ -65,7 +65,7 @@ const Navbar = () => {
                   <Link href="/sign-up">
                     <Button
                       size="lg"
-                      className="bg-emerald-600 text-white hover:bg-emerald-500 hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+                      className="bg-blue-600 text-white hover:bg-blue-500 hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
                     >
                       Apply Now
                     </Button>
