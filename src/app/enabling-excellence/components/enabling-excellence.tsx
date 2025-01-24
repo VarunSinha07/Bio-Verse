@@ -75,7 +75,7 @@ const FeatureItem = ({ feature }: { feature: (typeof features)[0] }) => {
           transition={{ duration: 0.3 }}
         >
           <Image
-            src={feature.image || "/placeholder.svg"}
+            src={feature.image || "/excellence1.jpg"}
             alt={feature.title}
             layout="fill"
             objectFit="cover"
