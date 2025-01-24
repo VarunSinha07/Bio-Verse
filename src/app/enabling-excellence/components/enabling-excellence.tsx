@@ -1,7 +1,7 @@
 "use client"
 
-import { useRef } from "react"
-import { motion, useScroll, useInView } from "framer-motion"
+import { useRef, useState, useEffect } from "react"
+import { motion, useScroll, useInView, AnimatePresence } from "framer-motion"
 import { Cormorant_Garamond, Waterfall } from "next/font/google"
 import { Icon } from "@iconify/react"
 import Image from "next/image"
@@ -54,6 +54,8 @@ const features = [
   },
 ]
 
+const heroImages = ["/excellence1.jpg", "/excellence2.jpg", "/excellence1.jpg", "/excellence1.jpg", "/excellence2.jpg"]
+
 const FeatureItem = ({ feature }: { feature: (typeof features)[0] }) => {
   const ref = useRef(null)
   const isInView = useInView(ref, { margin: "-40% 0px -40% 0px" })
@@ -73,7 +75,7 @@ const FeatureItem = ({ feature }: { feature: (typeof features)[0] }) => {
           transition={{ duration: 0.3 }}
         >
           <Image
-            src={feature.image || "/img1.jpg"}
+            src={feature.image || "/placeholder.svg"}
             alt={feature.title}
             layout="fill"
             objectFit="cover"
@@ -114,16 +116,42 @@ const FeatureItem = ({ feature }: { feature: (typeof features)[0] }) => {
 
 export default function EnablingExcellence() {
   const containerRef = useRef<HTMLDivElement>(null)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   useScroll({
     target: containerRef,
     offset: ["start start", "end start"],
   })
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length)
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [])
+
   return (
     <div className="bg-gray-50 min-h-screen">
-      <div className="relative h-[60vh] overflow-hidden">
-        <Image src="/img1.jpg" alt="Hero image" layout="fill" objectFit="cover" priority />
+      <div className="relative h-screen overflow-hidden">
+        <AnimatePresence initial={false}>
+          <motion.div
+            key={currentImageIndex}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1, ease: "easeInOut" }}
+            className="absolute inset-0"
+          >
+            <Image
+              src={heroImages[currentImageIndex] || "/placeholder.svg"}
+              alt={`Hero image ${currentImageIndex + 1}`}
+              layout="fill"
+              objectFit="cover"
+              priority
+            />
+          </motion.div>
+        </AnimatePresence>
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <motion.h1
             className={`${waterfall.className} text-5xl md:text-7xl text-center text-white`}
