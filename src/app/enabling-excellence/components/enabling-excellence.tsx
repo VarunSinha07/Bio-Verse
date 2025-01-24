@@ -54,7 +54,7 @@ const features = [
   },
 ]
 
-const heroImages = ["/excellence1.jpg", "/excellence2.jpg", "/excellence1.jpg", "/excellence1.jpg", "/excellence2.jpg"]
+const heroImages = ["/excellence1.jpg", "/excellence2.jpg", "/excellence1.jpg", "/excellence2.jpg", "/excellence1.jpg"]
 
 const FeatureItem = ({ feature }: { feature: (typeof features)[0] }) => {
   const ref = useRef(null)
@@ -69,7 +69,7 @@ const FeatureItem = ({ feature }: { feature: (typeof features)[0] }) => {
         className={`${cormorantGaramond.className} flex flex-col md:flex-row items-center gap-12 group`}
       >
         <motion.div
-          className="w-full md:w-1/2 aspect-square relative overflow-hidden rounded-lg order-1 md:order-2"
+          className="w-full md:w-1/2 aspect-square relative overflow-hidden rounded-full order-1 md:order-2"
           initial={{ opacity: 0, scale: 0.9, y: 50 }}
           animate={isInView ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.9, y: 50 }}
           transition={{ duration: 0.3 }}
@@ -96,12 +96,12 @@ const FeatureItem = ({ feature }: { feature: (typeof features)[0] }) => {
             >
               <Icon icon={feature.icon} />
             </motion.div>
-            <h3 className="text-2xl font-semibold text-teal-700 group-hover:text-blue-600 transition-colors duration-300">
+            <h3 className="text-4xl font-semibold text-teal-700 group-hover:text-blue-600 transition-colors duration-300">
               {feature.title}
             </h3>
           </motion.div>
           <motion.p
-            className="text-lg text-gray-600 group-hover:text-gray-800 transition-colors duration-300"
+            className="text-2xl text-gray-600 group-hover:text-gray-800 transition-colors duration-300"
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.5, delay: 0.8 }}
@@ -154,7 +154,7 @@ export default function EnablingExcellence() {
         </AnimatePresence>
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <motion.h1
-            className={`${waterfall.className} text-5xl md:text-7xl text-center text-white`}
+            className={`${waterfall.className} text-6xl md:text-8xl lg:text-9xl text-center text-white`}
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
