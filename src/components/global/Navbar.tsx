@@ -1,20 +1,27 @@
-"use client"
+'use client';
 
-import React from "react"
-import { Button } from "../ui/button"
-import { authClient, useSession } from "@/lib/auth-client"
-import { redirect } from "next/navigation"
-import Link from "next/link"
+import React from 'react';
+import { Button } from '../ui/button';
+import { authClient, useSession } from '@/lib/auth-client';
+import { redirect } from 'next/navigation';
+import Link from 'next/link';
 
 const handleClick = () => {
-  authClient.signOut()
-  redirect("/sign-in")
-}
+  authClient.signOut();
+  redirect('/sign-in');
+};
 
 const Navbar = () => {
-  const session = useSession()
+  const session = useSession();
 
-  const navItems = ["Ecosystem", "Our Approach", "Enabling Excellence", "Workflow", "Insights", "Contact Us"]
+  const navItems = [
+    'Ecosystem',
+    'Our Approach',
+    'Enabling Excellence',
+    'Workflow',
+    'Insights',
+    'Contact Us',
+  ];
 
   return (
     <div className="sticky top-0 z-50">
@@ -30,7 +37,7 @@ const Navbar = () => {
             {navItems.map((item) => (
               <li key={item} className="relative group">
                 <Link
-                  href={`/${item.toLowerCase().replace(/ /g, "-")}`}
+                  href={`/${item.toLowerCase().replace(/ /g, '-')}`}
                   className="px-3 py-2 text-sm font-medium text-gray-300 transition-colors duration-300 hover:text-white"
                 >
                   {item}
@@ -70,12 +77,12 @@ const Navbar = () => {
                 </div>
               )}
             </li>
+            
           </ul>
         </div>
       </nav>
     </div>
-  )
-}
+  );
+};
 
-export default Navbar
-
+export default Navbar;

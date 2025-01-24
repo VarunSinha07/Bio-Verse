@@ -1,67 +1,76 @@
-"use client"
+'use client';
 
-import { useRef, useState, useEffect } from "react"
-import { motion, useScroll, useInView, AnimatePresence } from "framer-motion"
-import { Cormorant_Garamond, Waterfall } from "next/font/google"
-import { Icon } from "@iconify/react"
-import Image from "next/image"
+import { useRef, useState, useEffect } from 'react';
+import { motion, useScroll, useInView, AnimatePresence } from 'framer-motion';
+import { Cormorant_Garamond, Waterfall } from 'next/font/google';
+import { Icon } from '@iconify/react';
+import Image from 'next/image';
 
 const cormorantGaramond = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-})
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+});
 
 const waterfall = Waterfall({
-  subsets: ["latin"],
-  weight: ["400"],
-})
+  subsets: ['latin'],
+  weight: ['400'],
+});
 
 const features = [
   {
-    title: "Integrated Laboratory Management & Analytics",
+    title: 'Integrated Laboratory Management & Analytics',
     description:
-      "Centralized sample tracking and secure data storage with LIMS. Automated data integration from diverse laboratory workflows for seamless analytics.",
-    icon: "mdi:flask-outline",
-    image: "/img1.jpg",
+      'Centralized sample tracking and secure data storage with LIMS. Automated data integration from diverse laboratory workflows for seamless analytics.',
+    icon: 'mdi:flask-outline',
+    image: '/img1.jpg',
   },
   {
-    title: "AI-Powered Simulations",
+    title: 'AI-Powered Simulations',
     description:
-      "Virus Modeling predicts evolution, spread patterns, and potential impact zones of pathogens. Pathogen Behavior Analysis simulates interactions between pathogens and their environments.",
-    icon: "mdi:brain",
-    image: "/img1.jpg",
+      'Virus Modeling predicts evolution, spread patterns, and potential impact zones of pathogens. Pathogen Behavior Analysis simulates interactions between pathogens and their environments.',
+    icon: 'mdi:brain',
+    image: '/img1.jpg',
   },
   {
-    title: "Real-Time Outbreak Predictions",
+    title: 'Real-Time Outbreak Predictions',
     description:
-      "Combines LIMS-stored data with geographic and demographic datasets. Provides actionable insights into high-risk regions, enabling proactive public health measures.",
-    icon: "mdi:chart-bell-curve-cumulative",
-    image: "/img1.jpg",
+      'Combines LIMS-stored data with geographic and demographic datasets. Provides actionable insights into high-risk regions, enabling proactive public health measures.',
+    icon: 'mdi:chart-bell-curve-cumulative',
+    image: '/img1.jpg',
   },
   {
-    title: "Drug Discovery Simulations",
+    title: 'Drug Discovery Simulations',
     description:
-      "Utilizes genetic, biomarker, and pathogen data from LIMS for targeted simulations. AI algorithms predict drug efficacy and resistance mechanisms, accelerating therapeutic development.",
-    icon: "mdi:pill",
-    image: "/img1.jpg",
+      'Utilizes genetic, biomarker, and pathogen data from LIMS for targeted simulations. AI algorithms predict drug efficacy and resistance mechanisms, accelerating therapeutic development.',
+    icon: 'mdi:pill',
+    image: '/img1.jpg',
   },
   {
-    title: "Predictive Analytics for Public Health",
+    title: 'Predictive Analytics for Public Health',
     description:
-      "Identifies trends and correlations in infection rates, resistance patterns, and treatment outcomes. Suggests resource allocation strategies for effective epidemic management.",
-    icon: "mdi:chart-scatter-plot",
-    image: "/img1.jpg",
+      'Identifies trends and correlations in infection rates, resistance patterns, and treatment outcomes. Suggests resource allocation strategies for effective epidemic management.',
+    icon: 'mdi:chart-scatter-plot',
+    image: '/img1.jpg',
   },
-]
+];
 
-const heroImages = ["/excellence1.jpg", "/excellence2.jpg", "/excellence1.jpg", "/excellence2.jpg", "/excellence1.jpg"]
+const heroImages = [
+  '/excellence1.jpg',
+  '/excellence2.jpg',
+  '/excellence1.jpg',
+  '/excellence2.jpg',
+  '/excellence1.jpg',
+];
 
 const FeatureItem = ({ feature }: { feature: (typeof features)[0] }) => {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { margin: "-40% 0px -40% 0px" })
+  const ref = useRef(null);
+  const isInView = useInView(ref, { margin: '-40% 0px -40% 0px' });
 
   return (
-    <div ref={ref} className="min-h-screen flex items-center justify-center mb-[30vh]">
+    <div
+      ref={ref}
+      className="min-h-screen flex items-center justify-center mb-[30vh]"
+    >
       <motion.div
         initial={{ opacity: 0 }}
         animate={isInView ? { opacity: 1 } : { opacity: 0 }}
@@ -71,11 +80,15 @@ const FeatureItem = ({ feature }: { feature: (typeof features)[0] }) => {
         <motion.div
           className="w-full md:w-1/2 aspect-square relative overflow-hidden rounded-full order-1 md:order-2"
           initial={{ opacity: 0, scale: 0.9, y: 50 }}
-          animate={isInView ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.9, y: 50 }}
+          animate={
+            isInView
+              ? { opacity: 1, scale: 1, y: 0 }
+              : { opacity: 0, scale: 0.9, y: 50 }
+          }
           transition={{ duration: 0.3 }}
         >
           <Image
-            src={feature.image || "/excellence1.jpg"}
+            src={feature.image || '/excellence1.jpg'}
             alt={feature.title}
             layout="fill"
             objectFit="cover"
@@ -92,7 +105,7 @@ const FeatureItem = ({ feature }: { feature: (typeof features)[0] }) => {
             <motion.div
               className="flex-shrink-0 w-16 h-16 rounded-full bg-gradient-to-br from-teal-400 to-blue-500 flex items-center justify-center text-white text-3xl overflow-hidden group-hover:scale-110 transition-transform duration-300"
               whileHover={{ rotate: 360 }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
+              transition={{ duration: 0.8, ease: 'easeInOut' }}
             >
               <Icon icon={feature.icon} />
             </motion.div>
@@ -111,25 +124,25 @@ const FeatureItem = ({ feature }: { feature: (typeof features)[0] }) => {
         </div>
       </motion.div>
     </div>
-  )
-}
+  );
+};
 
 export default function EnablingExcellence() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useScroll({
     target: containerRef,
-    offset: ["start start", "end start"],
-  })
+    offset: ['start start', 'end start'],
+  });
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length)
-    }, 5000)
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
+    }, 5000);
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -140,11 +153,11 @@ export default function EnablingExcellence() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1, ease: "easeInOut" }}
+            transition={{ duration: 1, ease: 'easeInOut' }}
             className="absolute inset-0"
           >
             <Image
-              src={heroImages[currentImageIndex] || "/placeholder.svg"}
+              src={heroImages[currentImageIndex] || '/placeholder.svg'}
               alt={`Hero image ${currentImageIndex + 1}`}
               layout="fill"
               objectFit="cover"
@@ -164,12 +177,14 @@ export default function EnablingExcellence() {
         </div>
       </div>
 
-      <div ref={containerRef} className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8 relative pb-[20vh]">
+      <div
+        ref={containerRef}
+        className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8 relative pb-[20vh]"
+      >
         {features.map((feature) => (
           <FeatureItem key={feature.title} feature={feature} />
         ))}
       </div>
     </div>
-  )
+  );
 }
-
