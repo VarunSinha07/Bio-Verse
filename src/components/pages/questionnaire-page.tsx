@@ -82,7 +82,7 @@ const QuestionnairePage = () => {
         title: 'Success',
         description: 'Questionnaire submitted successfully',
       });
-      router.push('/dashboard');
+      router.push('/form');
     } catch (error) {
       toast({
         title: 'Error',
