@@ -73,7 +73,7 @@ const FeatureItem = ({ feature }: { feature: (typeof features)[0] }) => {
           transition={{ duration: 0.3 }}
         >
           <Image
-            src={feature.image || "/placeholder.svg"}
+            src={feature.image || "/img1.jpg"}
             alt={feature.title}
             layout="fill"
             objectFit="cover"
@@ -123,7 +123,7 @@ export default function EnablingExcellence() {
   return (
     <div className="bg-gray-50 min-h-screen">
       <div className="relative h-[60vh] overflow-hidden">
-        <Image src="/hero-image.jpg" alt="Hero image" layout="fill" objectFit="cover" priority />
+        <Image src="/img1.jpg" alt="Hero image" layout="fill" objectFit="cover" priority />
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <motion.h1
             className={`${waterfall.className} text-5xl md:text-7xl text-center text-white`}

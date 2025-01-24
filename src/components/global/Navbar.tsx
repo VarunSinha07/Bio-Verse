@@ -25,7 +25,7 @@ const Navbar = () => {
             {[
               'Ecosystem',
               'Our Approach',
-              'Ideas',
+              'enabling-excellence',
               'Workflow',
               'Insights',
               'Contact Us',
