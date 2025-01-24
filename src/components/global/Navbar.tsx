@@ -5,6 +5,7 @@ import { Button } from '../ui/button';
 import { authClient, useSession } from '@/lib/auth-client';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { ModeToggle } from '../mode-toggle';
 
 const handleClick = () => {
   authClient.signOut();
@@ -76,6 +77,9 @@ const Navbar = () => {
                   </Link>
                 </div>
               )}
+            </li>
+            <li>
+              <ModeToggle />
             </li>
           </ul>
         </div>
