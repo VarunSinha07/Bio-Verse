@@ -1,10 +1,11 @@
 'use client';
 
-import { Link } from 'lucide-react';
+
 import React from 'react';
 import { Button } from '../ui/button';
 import { authClient, useSession } from '@/lib/auth-client';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 
 const handleClick = () => {
   authClient.signOut();
