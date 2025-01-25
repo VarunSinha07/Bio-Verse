@@ -23,7 +23,7 @@ export async function POST(req: Request) {
       'stage',
     ];
 
-    const missingFields = requiredFields.filter(field => !data[field]);
+    const missingFields = requiredFields.filter((field) => !data[field]);
 
     if (missingFields.length > 0) {
       return NextResponse.json(

@@ -6,7 +6,7 @@ const page = () => {
       <HowItWorks />
       <ResearchUnits />
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default page;
