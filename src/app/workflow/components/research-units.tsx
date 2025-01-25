@@ -60,10 +60,10 @@ const ResearchUnitItem = ({ unit }: { unit: (typeof researchUnits)[0] }) => {
     <motion.div
       ref={ref}
       style={{ opacity, scale }}
-      className={`${cormorantGaramond.className} flex flex-col md:flex-row items-center gap-4 group mb-8`}
+      className={`${cormorantGaramond.className} flex flex-col md:flex-row items-center gap-6 group mb-12`}
     >
       <motion.div
-        className="w-full md:w-1/2 aspect-square relative overflow-hidden rounded-full order-1 md:order-2"
+        className="w-full md:w-2/5 aspect-square relative overflow-hidden rounded-full order-1 md:order-2"
         whileHover={{ scale: 1.05 }}
         transition={{ duration: 0.3 }}
       >
@@ -75,28 +75,28 @@ const ResearchUnitItem = ({ unit }: { unit: (typeof researchUnits)[0] }) => {
           className="transition-all duration-500 filter brightness-90 group-hover:brightness-110"
         />
       </motion.div>
-      <div className="w-full md:w-1/2 space-y-2 order-2 md:order-1">
+      <div className="w-full md:w-3/5 space-y-3 order-2 md:order-1">
         <motion.div
-          className="flex items-center gap-3"
+          className="flex items-center gap-4"
           initial={{ x: -50, opacity: 0 }}
           animate={isInView ? { x: 0, opacity: 1 } : {}}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <motion.div
-            className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-white text-xl overflow-hidden group-hover:scale-110 transition-transform duration-300"
+            className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-white text-2xl overflow-hidden group-hover:scale-110 transition-transform duration-300"
             whileHover={{ rotate: 360 }}
             transition={{ duration: 0.8, ease: "easeInOut" }}
           >
             <Icon icon={unit.icon} />
           </motion.div>
-          <h3 className="text-2xl font-semibold text-teal-700 group-hover:text-teal-500 transition-colors duration-300">
+          <h3 className="text-3xl font-semibold text-teal-700 group-hover:text-teal-500 transition-colors duration-300">
             {unit.title}
           </h3>
         </motion.div>
         {unit.description.map((desc, i) => (
           <motion.p
             key={i}
-            className="text-lg text-teal-700 group-hover:text-teal-600 transition-colors duration-300"
+            className="text-xl text-teal-700 group-hover:text-teal-600 transition-colors duration-300"
             initial={{ y: 20, opacity: 0 }}
             animate={isInView ? { y: 0, opacity: 1 } : {}}
             transition={{ duration: 0.5, delay: 0.3 + i * 0.1 }}
@@ -112,9 +112,9 @@ const ResearchUnitItem = ({ unit }: { unit: (typeof researchUnits)[0] }) => {
 export default function ResearchUnits() {
   return (
     <div className="bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <motion.h1
-          className={`${waterfall.className} text-5xl md:text-6xl lg:text-7xl text-center mb-8`}
+          className={`${waterfall.className} text-5xl md:text-8xl lg:text-9xl text-center mb-8`}
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
