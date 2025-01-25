@@ -1,53 +1,60 @@
-"use client"
+'use client';
 
-import { motion, useScroll, useTransform } from "framer-motion"
-import { useRef } from "react"
-import { Cormorant_Garamond, Waterfall } from "next/font/google"
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef } from 'react';
+import { Cormorant_Garamond, Waterfall } from 'next/font/google';
 
 const cormorantGaramond = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-})
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+});
 
 const waterfall = Waterfall({
-  subsets: ["latin"],
-  weight: ["400"],
-})
+  subsets: ['latin'],
+  weight: ['400'],
+});
 
 const steps = [
   {
-    title: "Data Integration",
+    title: 'Data Integration',
     description:
-      "LIMS collects, organizes, and standardizes laboratory data from genetic analysis, biomarker detection, and pathogen studies.",
+      'LIMS collects, organizes, and standardizes laboratory data from genetic analysis, biomarker detection, and pathogen studies.',
   },
   {
-    title: "AI-Driven Modeling",
+    title: 'AI-Driven Modeling',
     description:
-      "Virus simulation software processes data to predict mutations, spread pathways, and outbreak scenarios. Drug discovery modules simulate molecular interactions.",
+      'Virus simulation software processes data to predict mutations, spread pathways, and outbreak scenarios. Drug discovery modules simulate molecular interactions.',
   },
   {
-    title: "Outcome Generation",
+    title: 'Outcome Generation',
     description:
-      "Generates dynamic reports with real-time predictions for outbreak zones and drug efficacy. Visual dashboards display actionable insights.",
+      'Generates dynamic reports with real-time predictions for outbreak zones and drug efficacy. Visual dashboards display actionable insights.',
   },
   {
-    title: "Feedback Loop",
+    title: 'Feedback Loop',
     description:
-      "Continuous data input from LIMS updates the simulations, ensuring models remain accurate and adaptive.",
+      'Continuous data input from LIMS updates the simulations, ensuring models remain accurate and adaptive.',
   },
-]
+];
 
 const HowItWorks = () => {
-  const containerRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end end"],
-  })
+    offset: ['start start', 'end end'],
+  });
 
-  const tracingBeamProgress = useTransform(scrollYProgress, [0, 1], ["0%", "100%"])
+  const tracingBeamProgress = useTransform(
+    scrollYProgress,
+    [0, 1],
+    ['0%', '100%']
+  );
 
   return (
-    <section ref={containerRef} className="py-24 bg-gradient-to-b from-gray-50 to-white overflow-hidden">
+    <section
+      ref={containerRef}
+      className="py-24 bg-gradient-to-b from-gray-50 to-white overflow-hidden"
+    >
       <div className="container mx-auto px-4">
         <motion.h2
           className={`text-8xl font-extrabold text-center mb-24 text-[#2E8B57] ${waterfall.className}`}
@@ -63,7 +70,8 @@ const HowItWorks = () => {
             style={{
               height: tracingBeamProgress,
               opacity: 1,
-              boxShadow: "0 0 10px rgba(46, 139, 87, 0.5), 0 0 20px rgba(46, 139, 87, 0.3)",
+              boxShadow:
+                '0 0 10px rgba(46, 139, 87, 0.5), 0 0 20px rgba(46, 139, 87, 0.3)',
             }}
           />
           {steps.map((step, index) => (
@@ -75,7 +83,9 @@ const HowItWorks = () => {
               transition={{ duration: 0.8, delay: index * 0.2 }}
               viewport={{ once: true, amount: 0.3 }}
             >
-              <h3 className={`text-4xl font-semibold mb-4 text-teal-700 ${cormorantGaramond.className}`}>
+              <h3
+                className={`text-4xl font-semibold mb-4 text-teal-700 ${cormorantGaramond.className}`}
+              >
                 {step.title}
               </h3>
               <motion.p
@@ -91,8 +101,7 @@ const HowItWorks = () => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default HowItWorks
-
+export default HowItWorks;
