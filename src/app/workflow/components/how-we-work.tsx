@@ -41,7 +41,7 @@ const HowItWorks = () => {
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start end", "end start"],
+    offset: ["start start", "end end"],
   })
 
   const tracingBeamProgress = useTransform(scrollYProgress, [0, 1], ["0%", "100%"])
@@ -50,7 +50,7 @@ const HowItWorks = () => {
     <section ref={containerRef} className="py-24 bg-gradient-to-b from-gray-50 to-white overflow-hidden">
       <div className="container mx-auto px-4">
         <motion.h2
-          className={`text-7xl font-extrabold text-center mb-24 text-sea-green ${waterfall.className}`}
+          className={`text-8xl font-extrabold text-center mb-24 text-[#2E8B57] ${waterfall.className}`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -59,26 +59,23 @@ const HowItWorks = () => {
         </motion.h2>
         <div className="max-w-4xl mx-auto relative">
           <motion.div
-            className="absolute left-0 top-0 w-3 bg-gradient-to-b from-sea-green via-ocean-blue to-sea-green"
+            className="absolute left-0 top-0 w-1 bg-[#2E8B57]"
             style={{
               height: tracingBeamProgress,
-              backgroundSize: "100% 400%",
-              backgroundPosition: "center",
-              animation: "gradientFlow 8s linear infinite",
               opacity: 1,
-              boxShadow: "0 0 10px rgba(46, 139, 87, 0.5), 0 0 20px rgba(65, 105, 225, 0.3)",
+              boxShadow: "0 0 10px rgba(46, 139, 87, 0.5), 0 0 20px rgba(46, 139, 87, 0.3)",
             }}
           />
           {steps.map((step, index) => (
             <motion.div
               key={index}
-              className="mb-32 pl-16 relative"
+              className="mb-24 pl-8 relative"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: index * 0.2 }}
               viewport={{ once: true, amount: 0.3 }}
             >
-              <h3 className={`text-4xl font-semibold mb-4 text-ocean-blue ${cormorantGaramond.className}`}>
+              <h3 className={`text-4xl font-semibold mb-4 text-teal-700 ${cormorantGaramond.className}`}>
                 {step.title}
               </h3>
               <motion.p
