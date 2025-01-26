@@ -86,7 +86,7 @@ const FloatingParticle = ({ color }: { color: string }) => {
     )
 
     return () => clearInterval(interval)
-  }, [randomPosition]) // Added randomPosition to useEffect dependencies
+  }, [randomPosition]) 
 
   return (
     <motion.div
