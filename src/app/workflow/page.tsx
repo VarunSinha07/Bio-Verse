@@ -1,7 +1,7 @@
 import HowItWorks from "./components/how-we-work"
 import ResearchUnits from "./components/research-units"
 import ProductsLab from "./components/products";
-const page = () => {
+const Page = () => {
   return (
     <div>
       <HowItWorks />
@@ -11,4 +11,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

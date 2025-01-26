@@ -4,6 +4,7 @@
   "workbench.tree.enableStickyScroll": false,
   "workbench.tree.renderIndentGuides": "none",
   "workbench.tree.indent": 8,
-  "explorer.compactFolders": false 
+  "explorer.compactFolders": false,
+  
 
 }
