@@ -70,23 +70,35 @@ const LabBackground = () => (
 )
 
 const FloatingParticle = ({ color }: { color: string }) => {
-  const randomPosition = useCallback(() => ({
-    x: Math.random() * window.innerWidth,
-    y: Math.random() * window.innerHeight,
-  }), [])
-
-  const [position, setPosition] = useState(randomPosition())
+  const [isClient, setIsClient] = useState(false)
+  const [position, setPosition] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
-    const interval = setInterval(
-      () => {
-        setPosition(randomPosition())
-      },
-      Math.random() * 5000 + 5000,
-    )
+    setIsClient(true)
+  }, [])
+
+  const randomPosition = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      return {
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+      }
+    }
+    return { x: 0, y: 0 }
+  }, [])
+
+  useEffect(() => {
+    if (!isClient) return
+
+    const updatePosition = () => setPosition(randomPosition())
+    updatePosition() // Initial position
+
+    const interval = setInterval(updatePosition, Math.random() * 5000 + 5000)
 
     return () => clearInterval(interval)
-  }, [randomPosition]) // Added randomPosition to useEffect dependencies
+  }, [isClient, randomPosition]) 
+
+  if (!isClient) return null
 
   return (
     <motion.div
@@ -98,6 +110,48 @@ const FloatingParticle = ({ color }: { color: string }) => {
   )
 }
 
+// Rest of the component remains the same as in the original code
+export default function ProductsLab() {
+  const [activeIndex, setActiveIndex] = useState(0)
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveIndex((prevIndex) => (prevIndex + 1) % products.length)
+    }, 10000)
+
+    return () => clearInterval(timer)
+  }, [])
+
+  return (
+    <div className="relative w-full h-screen overflow-hidden bg-gray-100 text-gray-800">
+      <LabBackground />
+      {products.map((product) => (
+        <FloatingParticle key={product.title} color={product.color} />
+      ))}
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <motion.h1
+          className={`${waterfall.className} text-5xl md:text-7xl lg:text-8xl text-center mb-16`}
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          style={{ color: "#2E8B57" }}
+        >
+          Our Products
+        </motion.h1>
+        <div className="relative w-full h-[60vh]">
+          <AnimatePresence>
+            {products.map((product, index) => (
+              <ProductDisplay key={product.title} product={product} isActive={activeIndex === index} />
+            ))}
+          </AnimatePresence>
+        </div>
+        <NavigationDots activeIndex={activeIndex} setActiveIndex={setActiveIndex} />
+      </div>
+    </div>
+  )
+}
+
+// Include the previously defined ProductDisplay and NavigationDots components
 const ProductDisplay = ({ product, isActive }: { product: Product; isActive: boolean }) => (
   <motion.div
     className={`${cormorantGaramond.className} absolute inset-0 flex items-center justify-center`}
@@ -143,44 +197,3 @@ const NavigationDots = ({ activeIndex, setActiveIndex }: { activeIndex: number; 
     ))}
   </div>
 )
-
-export default function ProductsLab() {
-  const [activeIndex, setActiveIndex] = useState(0)
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveIndex((prevIndex) => (prevIndex + 1) % products.length)
-    }, 10000)
-
-    return () => clearInterval(timer)
-  }, [])
-
-  return (
-    <div className="relative w-full h-screen overflow-hidden bg-gray-100 text-gray-800">
-      <LabBackground />
-      {products.map((product) => (
-        <FloatingParticle key={product.title} color={product.color} />
-      ))}
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <motion.h1
-          className={`${waterfall.className} text-5xl md:text-7xl lg:text-8xl text-center mb-16`}
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          style={{ color: "#2E8B57" }}
-        >
-          Our Products
-        </motion.h1>
-        <div className="relative w-full h-[60vh]">
-          <AnimatePresence>
-            {products.map((product, index) => (
-              <ProductDisplay key={product.title} product={product} isActive={activeIndex === index} />
-            ))}
-          </AnimatePresence>
-        </div>
-        <NavigationDots activeIndex={activeIndex} setActiveIndex={setActiveIndex} />
-      </div>
-    </div>
-  )
-}
-
