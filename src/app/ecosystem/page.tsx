@@ -21,19 +21,16 @@ const ecosystemComponents = [
     title: "Virtual Incubation Hub",
     description:
       "Simulated environments for HealthTech design, bio-simulation, and prototype testing. AI-powered tools for genetic analysis, virus modeling, and biomarker analysis.",
-    icon: "mdi:test-tube",
   },
   {
     title: "Bio Design Studio",
     description:
       "Virtual 3D modeling for biochip and wearable device design. Integration with online manufacturing partners for physical prototyping when required.",
-    icon: "mdi:molecule",
   },
   {
     title: "AI Simulation Platform",
     description:
       "AI-powered simulations for real-time biological data analytics, pathogen behavior modeling, and drug discovery.",
-    icon: "mdi:brain",
   },
 ]
 
@@ -71,23 +68,22 @@ const EcosystemCarousel = () => {
         >
           <div className="w-full md:w-1/2 space-y-6 order-2 md:order-1">
             <div className="flex items-center gap-6">
-              <div className="flex-shrink-0 w-16 h-16 rounded-full bg-gradient-to-br from-sea-green to-teal-500 flex items-center justify-center text-white text-3xl overflow-hidden">
-                <Icon icon={ecosystemComponents[currentIndex].icon} />
-              </div>
               <h3 className={`${waterfall.className} text-7xl font-semibold text-sea-green`}>
                 {ecosystemComponents[currentIndex].title}
               </h3>
             </div>
             <p className="text-3xl text-white">{ecosystemComponents[currentIndex].description}</p>
           </div>
-          <div className="w-full md:w-1/2 aspect-square relative overflow-hidden rounded-lg order-1 md:order-2">
-            <Image
-              src="/img2.jpg"
-              alt={ecosystemComponents[currentIndex].title}
-              layout="fill"
-              objectFit="cover"
-              className="transition-all duration-300"
-            />
+          <div className="w-full md:w-2/5 flex justify-end items-center order-1 md:order-2">
+            <div className="w-96 h-96 relative overflow-hidden rounded-full border-4 border-sea-green">
+              <Image
+                src="/img2.jpg"
+                alt={ecosystemComponents[currentIndex].title}
+                layout="fill"
+                objectFit="cover"
+                className="transition-all duration-300"
+              />
+            </div>
           </div>
         </motion.div>
       </AnimatePresence>
