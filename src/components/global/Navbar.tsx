@@ -1,18 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-'use client';
-
-import React from 'react';
-import { Button } from '../ui/button';
-import { authClient } from '@/lib/auth-client';
-import { redirect } from 'next/navigation';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { ModeToggle } from '../mode-toggle';
+"use client"
+import { Button } from "../ui/button"
+import { authClient } from "@/lib/auth-client"
+import { redirect } from "next/navigation"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { ModeToggle } from "../mode-toggle"
+import MobileMenu from "./mobile-menu"
 
 const handleClick = () => {
-  authClient.signOut();
-  redirect('/sign-in');
-};
+  authClient.signOut()
+  redirect("/sign-in")
+}
 
 interface NavbarProps {
   navItems: string[]
@@ -44,10 +43,10 @@ const Navbar = () => {
                 {item}
               </Link>
               <span
-                className={`absolute left-0 bottom-0 w-full h-0.5 bg-sea-green transition-all duration-300 ${
+                className={`absolute left-1/2 bottom-0 w-0 h-0.5 bg-sea-green transition-all duration-300 ${
                   pathname === `/${item.toLowerCase().replace(/ /g, "-")}`
-                    ? "opacity-100"
-                    : "opacity-0 group-hover:opacity-100"
+                    ? "w-full left-0"
+                    : "group-hover:w-full group-hover:left-0"
                 }`}
               />
             </li>
@@ -73,12 +72,15 @@ const Navbar = () => {
               </Button>
             </Link>
           </div>
-          <ModeToggle />
+          <div className="hidden md:block">
+            <ModeToggle />
+          </div>
+          <MobileMenu navItems={navItems} />
         </div>
       </div>
     </nav>
   )
 }
 
+export default Navbar
 
-export default Navbar;
