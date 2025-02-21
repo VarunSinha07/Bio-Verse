@@ -49,12 +49,12 @@ export const questionnaireSchema = z.object({
   startUpName: z
     .string()
     .min(3, 'Startup Name must be at least 3 characters')
-    .max(200, 'Startup Name is too long'),
+    .max(200, 'Startup Name is too long').optional(),
 
   website: z
     .string()
     .min(3, 'Website link must be at least 3 characters')
-    .max(200, 'Website link is too long'),
+    .max(200, 'Website link is too long').optional(),
 
   industry: z.enum(
     INDUSTRY_OPTIONS.map((opt) => opt.value) as [string, ...string[]],
