@@ -1,6 +1,6 @@
-import HowItWorks from "./components/how-we-work"
-import ResearchUnits from "./components/research-units"
-import ProductsLab from "./components/products";
+import HowItWorks from './components/how-we-work';
+import ResearchUnits from './components/research-units';
+import ProductsLab from './components/products';
 const Page = () => {
   return (
     <div>

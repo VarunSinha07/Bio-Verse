@@ -1,21 +1,21 @@
-"use client"
+'use client';
 
-import type React from "react"
-import { useState } from "react"
-import { AnimatePresence, motion } from "framer-motion"
-import Link from "next/link"
-import { Button } from "../ui/button"
-import { ModeToggle } from "../mode-toggle"
-import { Menu, X } from "lucide-react"
+import type React from 'react';
+import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import Link from 'next/link';
+import { Button } from '../ui/button';
+import { ModeToggle } from '../mode-toggle';
+import { Menu, X } from 'lucide-react';
 
 interface MobileMenuProps {
-  navItems: string[]
+  navItems: string[];
 }
 
 const MobileMenu: React.FC<MobileMenuProps> = ({ navItems }) => {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
-  const toggleMenu = () => setIsOpen(!isOpen)
+  const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
     <div className="md:hidden">
@@ -35,7 +35,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ navItems }) => {
               {navItems.map((item) => (
                 <Link
                   key={item}
-                  href={`/${item.toLowerCase().replace(/ /g, "-")}`}
+                  href={`/${item.toLowerCase().replace(/ /g, '-')}`}
                   className="text-gray-300 hover:text-white transition-colors duration-300"
                   onClick={toggleMenu}
                 >
@@ -52,7 +52,10 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ navItems }) => {
                 </Button>
               </Link>
               <Link href="/sign-up" onClick={toggleMenu}>
-                <Button size="sm" className="w-full bg-sea-green text-white hover:bg-sea-green/80">
+                <Button
+                  size="sm"
+                  className="w-full bg-sea-green text-white hover:bg-sea-green/80"
+                >
                   Sign Up
                 </Button>
               </Link>
@@ -62,7 +65,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ navItems }) => {
         )}
       </AnimatePresence>
     </div>
-  )
-}
+  );
+};
 
-export default MobileMenu
+export default MobileMenu;

@@ -1,52 +1,62 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client"
-import { Button } from "../ui/button"
-import { authClient } from "@/lib/auth-client"
-import { redirect } from "next/navigation"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { ModeToggle } from "../mode-toggle"
-import MobileMenu from "./mobile-menu"
+'use client';
+import { Button } from '../ui/button';
+import { authClient } from '@/lib/auth-client';
+import { redirect } from 'next/navigation';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { ModeToggle } from '../mode-toggle';
+import MobileMenu from './mobile-menu';
 
 const handleClick = () => {
-  authClient.signOut()
-  redirect("/sign-in")
-}
+  authClient.signOut();
+  redirect('/sign-in');
+};
 
 interface NavbarProps {
-  navItems: string[]
-  handleClick: () => void
+  navItems: string[];
+  handleClick: () => void;
 }
 
 const Navbar = () => {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
-  const navItems = ["Ecosystem", "Our Approach", "Enabling Excellence", "Workflow", "Insights", "Contact Us"]
+  const navItems = [
+    'Ecosystem',
+    'Our Approach',
+    'Enabling Excellence',
+    'Workflow',
+    'Insights',
+    'Contact Us',
+  ];
 
   return (
     <nav className="sticky top-0 z-50 bg-gradient-to-r from-black to-gray-900 text-white p-4 shadow-lg border-b border-sea-green">
       <div className="container mx-auto flex justify-between items-center">
-        <Link href="/" className="text-3xl font-bold text-sea-green hover:text-white transition-colors duration-300">
+        <Link
+          href="/"
+          className="text-3xl font-bold text-sea-green hover:text-white transition-colors duration-300"
+        >
           Bioverse
         </Link>
         <ul className="hidden md:flex space-x-4">
           {navItems.map((item) => (
             <li key={item} className="relative group">
               <Link
-                href={`/${item.toLowerCase().replace(/ /g, "-")}`}
+                href={`/${item.toLowerCase().replace(/ /g, '-')}`}
                 className={`px-3 py-2 text-sm font-medium transition-colors duration-300 ${
-                  pathname === `/${item.toLowerCase().replace(/ /g, "-")}`
-                    ? "text-sea-green"
-                    : "text-gray-300 hover:text-white"
+                  pathname === `/${item.toLowerCase().replace(/ /g, '-')}`
+                    ? 'text-sea-green'
+                    : 'text-gray-300 hover:text-white'
                 }`}
               >
                 {item}
               </Link>
               <span
                 className={`absolute left-1/2 bottom-0 w-0 h-0.5 bg-sea-green transition-all duration-300 ${
-                  pathname === `/${item.toLowerCase().replace(/ /g, "-")}`
-                    ? "w-full left-0"
-                    : "group-hover:w-full group-hover:left-0"
+                  pathname === `/${item.toLowerCase().replace(/ /g, '-')}`
+                    ? 'w-full left-0'
+                    : 'group-hover:w-full group-hover:left-0'
                 }`}
               />
             </li>
@@ -79,8 +89,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
-
+export default Navbar;

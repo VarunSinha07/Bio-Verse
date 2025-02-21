@@ -23,7 +23,7 @@
 //   format,
 //   description,
 //   modules,
-  
+
 //   buttonText,
 //   buttonLink,
 // }: CourseSectionProps) {
@@ -99,29 +99,21 @@
 //   )
 // }
 
-
-
-
-
-
-
-
-
-"use client"
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { ChevronDown, ChevronUp } from "lucide-react"
+'use client';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface CourseSectionProps {
-  title: string
-  duration: string
-  format: string
-  description: string
-  modules: string[]
-  image: string
-  images?: string[]
-  buttonText?: string
-  buttonLink?: string
+  title: string;
+  duration: string;
+  format: string;
+  description: string;
+  modules: string[];
+  image: string;
+  images?: string[];
+  buttonText?: string;
+  buttonLink?: string;
 }
 
 export default function CourseSection({
@@ -129,25 +121,25 @@ export default function CourseSection({
   duration,
   format,
   description,
-  modules = [], 
+  modules = [],
   image,
   images = [],
   buttonText,
   buttonLink,
 }: CourseSectionProps) {
-  const [isExpanded, setIsExpanded] = useState(false)
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
   // Use the provided image as the first image if images array is empty
-  const allImages = images.length > 0 ? images : [image, image, image, image]
+  const allImages = images.length > 0 ? images : [image, image, image, image];
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % allImages.length)
-    }, 2500)
+      setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
+    }, 2500);
 
-    return () => clearInterval(interval)
-  }, [allImages.length])
+    return () => clearInterval(interval);
+  }, [allImages.length]);
 
   return (
     <motion.section
@@ -159,14 +151,17 @@ export default function CourseSection({
       <div className="flex flex-col md:flex-row items-center mb-4">
         <motion.div
           className="w-full md:w-1/3 mb-4 md:mb-0 md:mr-6 relative overflow-hidden rounded-lg"
-          whileHover={{ scale: 1.05, boxShadow: "0px 0px 8px rgb(79, 70, 229)" }}
+          whileHover={{
+            scale: 1.05,
+            boxShadow: '0px 0px 8px rgb(79, 70, 229)',
+          }}
           transition={{ duration: 0.3 }}
         >
           <div className="relative w-full aspect-video">
             <AnimatePresence mode="wait">
               <motion.img
                 key={currentImageIndex}
-                src={allImages[currentImageIndex] || "/placeholder.svg"}
+                src={allImages[currentImageIndex] || '/placeholder.svg'}
                 alt={`${title} - Image ${currentImageIndex + 1}`}
                 initial={{ opacity: 0, x: 100 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -180,7 +175,9 @@ export default function CourseSection({
                 <div
                   key={index}
                   className={`w-2 h-2 rounded-full ${
-                    index === currentImageIndex ? "bg-indigo-600" : "bg-gray-300"
+                    index === currentImageIndex
+                      ? 'bg-indigo-600'
+                      : 'bg-gray-300'
                   }`}
                 />
               ))}
@@ -211,14 +208,18 @@ export default function CourseSection({
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
-        {isExpanded ? "Hide Modules" : "Show Modules"}
-        {isExpanded ? <ChevronUp className="ml-2" /> : <ChevronDown className="ml-2" />}
+        {isExpanded ? 'Hide Modules' : 'Show Modules'}
+        {isExpanded ? (
+          <ChevronUp className="ml-2" />
+        ) : (
+          <ChevronDown className="ml-2" />
+        )}
       </motion.button>
       <AnimatePresence>
         {isExpanded && (
           <motion.ul
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
+            animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
             className="mt-4 space-y-2"
@@ -239,5 +240,5 @@ export default function CourseSection({
         )}
       </AnimatePresence>
     </motion.section>
-  )
+  );
 }

@@ -1,60 +1,60 @@
-"use client"
+'use client';
 
-import { useRef } from "react"
-import { motion, useInView, useScroll, useTransform } from "framer-motion"
-import { Cormorant_Garamond, Waterfall } from "next/font/google"
-import { Icon } from "@iconify/react"
-import Image from "next/image"
+import { useRef } from 'react';
+import { motion, useInView, useScroll, useTransform } from 'framer-motion';
+import { Cormorant_Garamond, Waterfall } from 'next/font/google';
+import { Icon } from '@iconify/react';
+import Image from 'next/image';
 
 const cormorantGaramond = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-})
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+});
 
 const waterfall = Waterfall({
-  subsets: ["latin"],
-  weight: ["400"],
-})
+  subsets: ['latin'],
+  weight: ['400'],
+});
 
 const researchUnits = [
   {
-    title: "AI-Driven Pathogen Simulation",
+    title: 'AI-Driven Pathogen Simulation',
     description: [
-      "Predictive modeling of virus mutations and epidemic trajectories.",
-      "Tools to visualize geographic spread and impact zones.",
+      'Predictive modeling of virus mutations and epidemic trajectories.',
+      'Tools to visualize geographic spread and impact zones.',
     ],
-    icon: "mdi:virus",
-    image: "/img1.jpg",
+    icon: 'mdi:virus',
+    image: '/img1.jpg',
   },
   {
-    title: "Digital Bioprinting & Biochip Design",
+    title: 'Digital Bioprinting & Biochip Design',
     description: [
-      "Virtual modeling of bioprinting workflows and biochip layouts.",
-      "Real-time adjustments for efficiency and performance optimization.",
+      'Virtual modeling of bioprinting workflows and biochip layouts.',
+      'Real-time adjustments for efficiency and performance optimization.',
     ],
-    icon: "mdi:printer-3d",
-    image: "/img1.jpg",
+    icon: 'mdi:printer-3d',
+    image: '/img1.jpg',
   },
   {
-    title: "Personalized Medicine Simulations",
+    title: 'Personalized Medicine Simulations',
     description: [
-      "AI algorithms to model patient-specific responses to treatments.",
-      "Tools to simulate genetic interactions and drug efficacy.",
+      'AI algorithms to model patient-specific responses to treatments.',
+      'Tools to simulate genetic interactions and drug efficacy.',
     ],
-    icon: "mdi:dna",
-    image: "/img1.jpg",
+    icon: 'mdi:dna',
+    image: '/img1.jpg',
   },
-]
+];
 
 const ResearchUnitItem = ({ unit }: { unit: (typeof researchUnits)[0] }) => {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-100px' });
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start end", "end start"],
-  })
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0, 1, 0])
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1, 0.8])
+    offset: ['start end', 'end start'],
+  });
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0, 1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1, 0.8]);
 
   return (
     <motion.div
@@ -68,7 +68,7 @@ const ResearchUnitItem = ({ unit }: { unit: (typeof researchUnits)[0] }) => {
         transition={{ duration: 0.3 }}
       >
         <Image
-          src={unit.image || "/placeholder.svg"}
+          src={unit.image || '/placeholder.svg'}
           alt={unit.title}
           layout="fill"
           objectFit="cover"
@@ -85,7 +85,7 @@ const ResearchUnitItem = ({ unit }: { unit: (typeof researchUnits)[0] }) => {
           <motion.div
             className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-white text-2xl overflow-hidden group-hover:scale-110 transition-transform duration-300"
             whileHover={{ rotate: 360 }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
+            transition={{ duration: 0.8, ease: 'easeInOut' }}
           >
             <Icon icon={unit.icon} />
           </motion.div>
@@ -106,8 +106,8 @@ const ResearchUnitItem = ({ unit }: { unit: (typeof researchUnits)[0] }) => {
         ))}
       </div>
     </motion.div>
-  )
-}
+  );
+};
 
 export default function ResearchUnits() {
   return (
@@ -118,17 +118,20 @@ export default function ResearchUnits() {
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          style={{ color: "#2E8B57" }}
+          style={{ color: '#2E8B57' }}
         >
           Research Units
         </motion.h1>
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.5 }}>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+        >
           {researchUnits.map((unit) => (
             <ResearchUnitItem key={unit.title} unit={unit} />
           ))}
         </motion.div>
       </div>
     </div>
-  )
+  );
 }
-

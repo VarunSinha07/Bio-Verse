@@ -1,59 +1,67 @@
-"use client"
+'use client';
 
-import { useRef, useState, useEffect } from "react"
-import { motion, useScroll, AnimatePresence } from "framer-motion"
-import { Cormorant_Garamond, Waterfall } from "next/font/google"
-import { Icon } from "@iconify/react"
-import Image from "next/image"
+import { useRef, useState, useEffect } from 'react';
+import { motion, useScroll, AnimatePresence } from 'framer-motion';
+import { Cormorant_Garamond, Waterfall } from 'next/font/google';
+import { Icon } from '@iconify/react';
+import Image from 'next/image';
 
 const cormorantGaramond = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-})
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+});
 
 const waterfall = Waterfall({
-  subsets: ["latin"],
-  weight: ["400"],
-})
+  subsets: ['latin'],
+  weight: ['400'],
+});
 
 const ecosystemComponents = [
   {
-    title: "Virtual Incubation Hub",
+    title: 'Virtual Incubation Hub',
     description:
-      "Simulated environments for HealthTech design, bio-simulation, and prototype testing. AI-powered tools for genetic analysis, virus modeling, and biomarker analysis.",
+      'Simulated environments for HealthTech design, bio-simulation, and prototype testing. AI-powered tools for genetic analysis, virus modeling, and biomarker analysis.',
   },
   {
-    title: "Bio Design Studio",
+    title: 'Bio Design Studio',
     description:
-      "Virtual 3D modeling for biochip and wearable device design. Integration with online manufacturing partners for physical prototyping when required.",
+      'Virtual 3D modeling for biochip and wearable device design. Integration with online manufacturing partners for physical prototyping when required.',
   },
   {
-    title: "AI Simulation Platform",
+    title: 'AI Simulation Platform',
     description:
-      "AI-powered simulations for real-time biological data analytics, pathogen behavior modeling, and drug discovery.",
+      'AI-powered simulations for real-time biological data analytics, pathogen behavior modeling, and drug discovery.',
   },
-]
+];
 
-const heroImages = ["/img1.jpg", "/img2.jpg"]
+const heroImages = ['/img1.jpg', '/img2.jpg'];
 
 const EcosystemCarousel = () => {
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % ecosystemComponents.length)
-    }, 10000)
+      setCurrentIndex(
+        (prevIndex) => (prevIndex + 1) % ecosystemComponents.length
+      );
+    }, 10000);
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearInterval(interval);
+  }, []);
 
   const goToPrevious = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + ecosystemComponents.length) % ecosystemComponents.length)
-  }
+    setCurrentIndex(
+      (prevIndex) =>
+        (prevIndex - 1 + ecosystemComponents.length) %
+        ecosystemComponents.length
+    );
+  };
 
   const goToNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % ecosystemComponents.length)
-  }
+    setCurrentIndex(
+      (prevIndex) => (prevIndex + 1) % ecosystemComponents.length
+    );
+  };
 
   return (
     <div className="relative h-[600px] overflow-hidden">
@@ -63,16 +71,20 @@ const EcosystemCarousel = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1, ease: "easeInOut" }}
+          transition={{ duration: 1, ease: 'easeInOut' }}
           className={`${cormorantGaramond.className} absolute inset-0 flex flex-col md:flex-row items-center gap-12 px-16 py-8`}
         >
           <div className="w-full md:w-1/2 space-y-6 order-2 md:order-1">
             <div className="flex items-center gap-6">
-              <h3 className={`${waterfall.className} text-7xl font-semibold text-sea-green`}>
+              <h3
+                className={`${waterfall.className} text-7xl font-semibold text-sea-green`}
+              >
                 {ecosystemComponents[currentIndex].title}
               </h3>
             </div>
-            <p className="text-3xl text-white">{ecosystemComponents[currentIndex].description}</p>
+            <p className="text-3xl text-white">
+              {ecosystemComponents[currentIndex].description}
+            </p>
           </div>
           <div className="w-full md:w-2/5 flex justify-end items-center order-1 md:order-2">
             <div className="w-96 h-96 relative overflow-hidden rounded-full border-4 border-sea-green">
@@ -102,25 +114,25 @@ const EcosystemCarousel = () => {
         <Icon icon="mdi:chevron-right" className="text-3xl" />
       </button>
     </div>
-  )
-}
+  );
+};
 
 export default function Ecosystem() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useScroll({
     target: containerRef,
-    offset: ["start start", "end start"],
-  })
+    offset: ['start start', 'end start'],
+  });
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length)
-    }, 5000)
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
+    }, 5000);
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -131,11 +143,11 @@ export default function Ecosystem() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1, ease: "easeInOut" }}
+            transition={{ duration: 1, ease: 'easeInOut' }}
             className="absolute inset-0"
           >
             <Image
-              src={heroImages[currentImageIndex] || "/placeholder.svg"}
+              src={heroImages[currentImageIndex] || '/placeholder.svg'}
               alt={`Ecosystem image ${currentImageIndex + 1}`}
               layout="fill"
               objectFit="cover"
@@ -151,25 +163,41 @@ export default function Ecosystem() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              <p>Bioverse integrates a comprehensive digital ecosystem that drives advancements in</p>
-              <p className={`${waterfall.className} text-3xl md:text-7xl font-bold text-white`}>Life Sciences</p>
-              <p className={`${waterfall.className} text-3xl md:text-7xl font-bold text-white`}>HealthTech</p>
-              <p className={`${waterfall.className} text-3xl md:text-7xl font-bold text-white`}>
+              <p>
+                Bioverse integrates a comprehensive digital ecosystem that
+                drives advancements in
+              </p>
+              <p
+                className={`${waterfall.className} text-3xl md:text-7xl font-bold text-white`}
+              >
+                Life Sciences
+              </p>
+              <p
+                className={`${waterfall.className} text-3xl md:text-7xl font-bold text-white`}
+              >
+                HealthTech
+              </p>
+              <p
+                className={`${waterfall.className} text-3xl md:text-7xl font-bold text-white`}
+              >
                 Environmental Technologies
               </p>
-
             </motion.div>
           </div>
         </div>
       </div>
 
-      <div ref={containerRef} className="bg-black py-16 px-4 sm:px-6 lg:px-8 relative">
-        <h2 className={`${cormorantGaramond.className} text-5xl font-bold text-center text-sea-green mb-16`}>
+      <div
+        ref={containerRef}
+        className="bg-black py-16 px-4 sm:px-6 lg:px-8 relative"
+      >
+        <h2
+          className={`${cormorantGaramond.className} text-5xl font-bold text-center text-sea-green mb-16`}
+        >
           Our Ecosystem Components
         </h2>
         <EcosystemCarousel />
       </div>
     </div>
-  )
+  );
 }
-

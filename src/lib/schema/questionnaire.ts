@@ -10,7 +10,7 @@ export const INDUSTRY_OPTIONS = [
   { value: 'diagnostics', label: 'Diagnostics and Testing' },
   { value: 'telemedicine', label: 'Telemedicine' },
   { value: 'genomics', label: 'Genomics' },
-  { value: 'medical-devices', label: 'Medical Devices and Equipment' }
+  { value: 'medical-devices', label: 'Medical Devices and Equipment' },
 ] as const;
 
 export const STAGE_OPTIONS = [
@@ -42,19 +42,20 @@ export const questionnaireSchema = z.object({
     .min(50, 'Please provide a detailed description (minimum 50 characters)')
     .max(2000, 'Description is too long'),
 
-  role: z.enum(
-      roleOptions.map((opt) => opt.value) as [string, ...string[]],
-      { required_error: 'Please select a MedTech/Biotech industry' }
-    ),
+  role: z.enum(roleOptions.map((opt) => opt.value) as [string, ...string[]], {
+    required_error: 'Please select a MedTech/Biotech industry',
+  }),
   startUpName: z
     .string()
     .min(3, 'Startup Name must be at least 3 characters')
-    .max(200, 'Startup Name is too long').optional(),
+    .max(200, 'Startup Name is too long')
+    .optional(),
 
   website: z
     .string()
     .min(3, 'Website link must be at least 3 characters')
-    .max(200, 'Website link is too long').optional(),
+    .max(200, 'Website link is too long')
+    .optional(),
 
   industry: z.enum(
     INDUSTRY_OPTIONS.map((opt) => opt.value) as [string, ...string[]],

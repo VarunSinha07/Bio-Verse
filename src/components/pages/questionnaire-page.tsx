@@ -31,7 +31,7 @@ const INITIAL_FORM_STATE: QuestionnaireFormData = {
   ideaTitle: '',
   role: 'Founder',
   ideaDescription: '',
-  startUpName : '',
+  startUpName: '',
   website: '',
   industry: 'HealthTech',
   stage: 'idea',
@@ -190,7 +190,7 @@ const QuestionnairePage = () => {
 
                 <div>
                   <label className="block text-sm font-medium mb-2 transition-colors duration-200">
-                  Idea Description
+                    Idea Description
                   </label>
                   <Textarea
                     {...register('ideaDescription')}

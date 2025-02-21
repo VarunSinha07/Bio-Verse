@@ -1,7 +1,7 @@
-"use client"
+'use client';
 
-import { motion } from "framer-motion"
-import { Microscope, Lightbulb, Rocket } from "lucide-react"
+import { motion } from 'framer-motion';
+import { Microscope, Lightbulb, Rocket } from 'lucide-react';
 
 export default function Hero() {
   return (
@@ -29,9 +29,9 @@ export default function Hero() {
       </motion.p>
       <div className="flex justify-center space-x-8">
         {[
-          { icon: Microscope, text: "Research" },
-          { icon: Lightbulb, text: "Innovate" },
-          { icon: Rocket, text: "Launch" },
+          { icon: Microscope, text: 'Research' },
+          { icon: Lightbulb, text: 'Innovate' },
+          { icon: Rocket, text: 'Launch' },
         ].map((item, index) => (
           <motion.div
             key={item.text}
@@ -47,6 +47,5 @@ export default function Hero() {
         ))}
       </div>
     </motion.section>
-  )
+  );
 }
-
