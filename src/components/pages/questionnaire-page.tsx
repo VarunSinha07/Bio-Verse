@@ -159,7 +159,7 @@ const QuestionnairePage = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2 transition-colors duration-200">
-                    StartUp Name
+                    StartUp Name (Optional)
                   </label>
                   <Input
                     {...register('startUpName')}
@@ -174,32 +174,32 @@ const QuestionnairePage = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2 transition-colors duration-200">
-                    StartUp Name
+                    Website (if any)
                   </label>
                   <Input
-                    {...register('startUpName')}
+                    {...register('website')}
                     placeholder="A brief title for your startup idea"
                     className="w-full transition-all duration-200 hover:border-[#5D3FD3] focus:border-[#5D3FD3] dark:bg-background"
                   />
-                  {errors.startUpName && (
+                  {errors.website && (
                     <p className="text-sm text-red-500 mt-1 animate-in fade-in slide-in-from-top-1 duration-200">
-                      {errors.startUpName.message}
+                      {errors.website.message}
                     </p>
                   )}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium mb-2 transition-colors duration-200">
-                    Website
+                  Idea Description
                   </label>
                   <Textarea
-                    {...register('website')}
+                    {...register('ideaDescription')}
                     placeholder="Describe your idea in detail..."
                     className="w-full min-h-[100px] transition-all duration-200 hover:border-[#5D3FD3] focus:border-[#5D3FD3] dark:bg-background"
                   />
-                  {errors.website && (
+                  {errors.ideaDescription && (
                     <p className="text-sm text-red-500 mt-1 animate-in fade-in slide-in-from-top-1 duration-200">
-                      {errors.website.message}
+                      {errors.ideaDescription.message}
                     </p>
                   )}
                 </div>

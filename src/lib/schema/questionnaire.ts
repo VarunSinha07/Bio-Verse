@@ -42,7 +42,7 @@ export const questionnaireSchema = z.object({
     .min(50, 'Please provide a detailed description (minimum 50 characters)')
     .max(2000, 'Description is too long'),
 
-    role: z.enum(
+  role: z.enum(
       roleOptions.map((opt) => opt.value) as [string, ...string[]],
       { required_error: 'Please select a MedTech/Biotech industry' }
     ),
