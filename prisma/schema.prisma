@@ -71,8 +71,11 @@ model Questionnaire {
   id              String   @id @default(cuid())
   userId          String
   name            String
+  role            String @default("founder")
   ideaTitle       String
   ideaDescription String   @db.Text
+  startUpName     String?
+  website         String?
   industry        String
   stage           String
   createdAt       DateTime @default(now())

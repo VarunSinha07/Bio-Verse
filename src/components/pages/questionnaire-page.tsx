@@ -19,6 +19,7 @@ import {
   questionnaireSchema,
   INDUSTRY_OPTIONS,
   STAGE_OPTIONS,
+  roleOptions,
 } from '@/lib/schema/questionnaire';
 import { useSession } from '@/lib/auth-client';
 import { toast } from '@/hooks/use-toast';
@@ -28,8 +29,11 @@ import { useForm } from 'react-hook-form';
 const INITIAL_FORM_STATE: QuestionnaireFormData = {
   name: '',
   ideaTitle: '',
+  role: 'Founder',
   ideaDescription: '',
-  industry: 'technology',
+  startUpName : '',
+  website: '',
+  industry: 'HealthTech',
   stage: 'idea',
 };
 
@@ -153,19 +157,49 @@ const QuestionnairePage = () => {
                     </p>
                   )}
                 </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2 transition-colors duration-200">
+                    StartUp Name
+                  </label>
+                  <Input
+                    {...register('startUpName')}
+                    placeholder="A brief title for your startup idea"
+                    className="w-full transition-all duration-200 hover:border-[#5D3FD3] focus:border-[#5D3FD3] dark:bg-background"
+                  />
+                  {errors.startUpName && (
+                    <p className="text-sm text-red-500 mt-1 animate-in fade-in slide-in-from-top-1 duration-200">
+                      {errors.startUpName.message}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2 transition-colors duration-200">
+                    StartUp Name
+                  </label>
+                  <Input
+                    {...register('startUpName')}
+                    placeholder="A brief title for your startup idea"
+                    className="w-full transition-all duration-200 hover:border-[#5D3FD3] focus:border-[#5D3FD3] dark:bg-background"
+                  />
+                  {errors.startUpName && (
+                    <p className="text-sm text-red-500 mt-1 animate-in fade-in slide-in-from-top-1 duration-200">
+                      {errors.startUpName.message}
+                    </p>
+                  )}
+                </div>
 
                 <div>
                   <label className="block text-sm font-medium mb-2 transition-colors duration-200">
-                    Idea Description
+                    Website
                   </label>
                   <Textarea
-                    {...register('ideaDescription')}
+                    {...register('website')}
                     placeholder="Describe your idea in detail..."
                     className="w-full min-h-[100px] transition-all duration-200 hover:border-[#5D3FD3] focus:border-[#5D3FD3] dark:bg-background"
                   />
-                  {errors.ideaDescription && (
+                  {errors.website && (
                     <p className="text-sm text-red-500 mt-1 animate-in fade-in slide-in-from-top-1 duration-200">
-                      {errors.ideaDescription.message}
+                      {errors.website.message}
                     </p>
                   )}
                 </div>
@@ -196,6 +230,35 @@ const QuestionnairePage = () => {
                   {errors.industry && (
                     <p className="text-sm text-red-500 mt-1 animate-in fade-in slide-in-from-top-1 duration-200">
                       {errors.industry.message}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2 transition-colors duration-200">
+                    Position You Hold
+                  </label>
+                  <Select
+                    value={formValues.role}
+                    onValueChange={(value) => setValue('role', value)}
+                  >
+                    <SelectTrigger className="w-full transition-all duration-200 hover:border-[#5D3FD3] focus:border-[#5D3FD3] dark:bg-background">
+                      <SelectValue placeholder="Select your industry" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {roleOptions.map((option) => (
+                        <SelectItem
+                          key={option.value}
+                          value={option.value}
+                          className="transition-colors duration-200 hover:bg-[#5D3FD3]/10"
+                        >
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.role && (
+                    <p className="text-sm text-red-500 mt-1 animate-in fade-in slide-in-from-top-1 duration-200">
+                      {errors.role.message}
                     </p>
                   )}
                 </div>

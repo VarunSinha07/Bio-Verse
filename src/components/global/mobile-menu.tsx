@@ -66,4 +66,3 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ navItems }) => {
 }
 
 export default MobileMenu
-
