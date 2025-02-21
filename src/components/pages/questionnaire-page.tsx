@@ -159,7 +159,7 @@ const QuestionnairePage = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2 transition-colors duration-200">
-                    StartUp Name (Optional)
+                    StartUp Name
                   </label>
                   <Input
                     {...register('startUpName')}
@@ -174,7 +174,7 @@ const QuestionnairePage = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2 transition-colors duration-200">
-                    Website (if any)
+                    Website
                   </label>
                   <Input
                     {...register('website')}
