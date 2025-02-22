@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 
+
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -20,10 +21,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} bg-white text-black`}>
-        <ThemeProvider attribute="class" defaultTheme="system">
-          <Navbar />
-          {children}
-        </ThemeProvider>
+        
+          <ThemeProvider attribute="class" defaultTheme="system">
+            <Navbar />
+            {children}
+          </ThemeProvider>
+       
       </body>
     </html>
   );

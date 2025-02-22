@@ -1,155 +1,177 @@
 'use client';
-import React, { useState } from 'react';
+
+import React, { useEffect, useState } from 'react';
+import { useSession } from '@/lib/auth-client';
+import { redirect } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import {
-  Clock,
-  Award,
-  BookOpen,
-  Calendar,
-  Upload,
-  ArrowRight,
-} from 'lucide-react';
+import { User } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+interface Questionnaire {
+  name: string;
+  role: string;
+  startUpName?: string;
+  industry: string;
+  stage: string;
+  website?: string;
+  ideaTitle: string;
+  ideaDescription: string;
+}
 
-const ProgramDashboard = () => {
-  const [currentStage] = useState(1);
-  const [programType] = useState('preincubation');
-  const [daysCompleted] = useState(30);
-  const [totalDays] = useState(90);
+interface DashboardData {
+  questionnaire: Questionnaire;
+}
 
-  const stages = [
-    { id: 1, title: 'Primary Details', completed: true },
-    { id: 2, title: 'Feedback & NDA', completed: false },
-    { id: 3, title: 'Mentor Session', completed: false },
-    { id: 4, title: 'Program Allotment', completed: false },
-  ];
 
-  const courseProgress = [
-    { id: 1, title: 'Business Model Canvas', progress: 80, score: 85 },
-    { id: 2, title: 'Pitch Deck Creation', progress: 60, score: 75 },
-    { id: 3, title: 'Financial Modeling', progress: 40, score: null },
-  ];
+export default function DashboardPage() {
+  const session = useSession();
+  const isPending = session?.isPending;
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
-  const mentorFeedback = [
-    {
-      date: '2025-01-02',
-      mentor: 'Dr. Sarah Johnson',
-      feedback:
-        'Great progress on the business model. Need to focus more on market validation.',
-    },
-  ];
+  useEffect(() => {
+    async function fetchDashboardData() {
+      if (session?.data?.user?.id) {
+        try {
+          const response = await fetch('/api/primary-details-fetch');
+          if (response.ok) {
+            const data = await response.json();
+            setDashboardData(data);
+          }
+        } catch (error) {
+          console.error('Error fetching dashboard data:', error);
+          toast({
+            title: "Error",
+            description: "Failed to load dashboard data",
+            variant: "destructive",
+          });
+        } finally {
+          setLoading(false);
+        }
+      }
+    }
+
+    fetchDashboardData();
+  }, [session, toast]);
+
+  const handleNextStage = async () => {
+    try {
+      setIsSubmitting(true);
+      
+      const response = await fetch('/api/stage', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit stage progression');
+      }
+
+      toast({
+        title: "Application Submitted",
+        description: "Your Application for stage 2 has been submitted. You will receive a mail when it gets approved.",
+        duration: 5000,
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to submit stage progression. Please try again.",
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (isPending || loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!session?.data) {
+    redirect('/sign-in');
+  }
+
+  const { questionnaire } = dashboardData || {};
+
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6 p-4">
-      {/* Progress Tracker */}
-      <div className="flex justify-between mb-8">
-        {stages.map((stage) => (
-          <div key={stage.id} className="flex flex-col items-center w-1/4">
-            <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                currentStage >= stage.id ? 'bg-blue-600' : 'bg-gray-200'
-              } text-white mb-2`}
-            >
-              {stage.id}
-            </div>
-            <div className="text-sm text-center">{stage.title}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Timeline Progress */}
+      {/* User Welcome Section */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Clock className="w-5 h-5" />
-            Program Timeline
+            <User className="w-5 h-5" />
+            Hi, {session?.data?.user?.email}
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <Progress
-            value={(daysCompleted / totalDays) * 100}
-            className="mb-2"
-          />
-          <div className="flex justify-between text-sm">
-            <span>{daysCompleted} days completed</span>
-            <span>{totalDays - daysCompleted} days remaining</span>
-          </div>
-        </CardContent>
       </Card>
 
-      {/* Course Progress */}
+      {/* Questionnaire Details */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <BookOpen className="w-5 h-5" />
-            Course Progress
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {courseProgress.map((course) => (
-              <div key={course.id} className="space-y-2">
-                <div className="flex justify-between">
-                  <span>{course.title}</span>
-                  {course.score && <span>Score: {course.score}%</span>}
-                </div>
-                <Progress value={course.progress} />
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Mentor Feedback */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Award className="w-5 h-5" />
-            Mentor Feedback
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {mentorFeedback.map((feedback, index) => (
-            <div key={index} className="border-l-4 border-blue-500 pl-4 mb-4">
-              <div className="font-semibold">{feedback.mentor}</div>
-              <div className="text-sm text-gray-500">{feedback.date}</div>
-              <div className="mt-2">{feedback.feedback}</div>
-            </div>
-          ))}
-          <Button className="mt-4" variant="outline">
-            <Calendar className="w-4 h-4 mr-2" />
-            Schedule Mentor Session
-          </Button>
-        </CardContent>
-      </Card>
-
-      {/* Program Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Program Actions</CardTitle>
+          <CardTitle>Primary Details</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button className="w-full">
-            <Upload className="w-4 h-4 mr-2" />
-            Upload Design/Prototype
-          </Button>
-          {programType === 'preincubation' && (
-            <Button className="w-full" variant="outline">
-              <ArrowRight className="w-4 h-4 mr-2" />
-              Apply for Incubation
-            </Button>
-          )}
-          {programType === 'incubation' && (
-            <Button className="w-full" variant="outline">
-              <ArrowRight className="w-4 h-4 mr-2" />
-              Explore Incubators
-            </Button>
-          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <h3 className="font-semibold">Name</h3>
+              <p className="text-gray-600">{questionnaire?.name}</p>
+            </div>
+            <div>
+              <h3 className="font-semibold">Role</h3>
+              <p className="text-gray-600">{questionnaire?.role}</p>
+            </div>
+            <div>
+              <h3 className="font-semibold">Startup Name</h3>
+              <p className="text-gray-600">{questionnaire?.startUpName || 'Not specified'}</p>
+            </div>
+            <div>
+              <h3 className="font-semibold">Industry</h3>
+              <p className="text-gray-600">{questionnaire?.industry}</p>
+            </div>
+            <div>
+              <h3 className="font-semibold">Current Stage</h3>
+              <p className="text-gray-600">{questionnaire?.stage}</p>
+            </div>
+            <div>
+              <h3 className="font-semibold">Website</h3>
+              <p className="text-gray-600">{questionnaire?.website || 'Not specified'}</p>
+            </div>
+            <div className="col-span-1 md:col-span-2">
+              <h3 className="font-semibold">Idea Title</h3>
+              <p className="text-gray-600">{questionnaire?.ideaTitle}</p>
+            </div>
+            <div className="col-span-1 md:col-span-2">
+              <h3 className="font-semibold">Idea Description</h3>
+              <p className="text-gray-600">{questionnaire?.ideaDescription}</p>
+            </div>
+          </div>
         </CardContent>
       </Card>
+
+      {/* Next Stage Button */}
+      <div className="flex justify-center">
+        <Button 
+          className="w-full md:w-1/2" 
+          onClick={handleNextStage} 
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Submitting...' : 'Apply for Next Stage'}
+        </Button>
+      </div>
     </div>
   );
-};
-
-export default ProgramDashboard;
+}

@@ -1,4 +1,4 @@
-import ProgramDashboard from '@/components/pages/dashboard-page';
+import DashboardPage from '@/components/pages/dashboard-page';
 import QuestionnairePage from '@/components/pages/questionnaire-page';
 import { getUser } from '@/lib/db/getUser';
 import { Session } from '@/lib/session';
@@ -15,7 +15,7 @@ const Page = async () => {
   if (!user?.hasCompletedQuestionnaire) {
     return <QuestionnairePage />;
   }
-  return <ProgramDashboard />;
+  return <DashboardPage />;
 };
 
 export default Page;

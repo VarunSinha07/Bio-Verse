@@ -39,7 +39,7 @@ const SignIn = () => {
           })
         },
         onSuccess: () => {
-          window.location.href = "/dashboard"
+          window.location.href = "/dashboard-page"
         },
         onError: async (ctx) => {
           if (ctx.error.status === 403) {

@@ -16,9 +16,11 @@ model User {
   createdAt                 DateTime
   updatedAt                 DateTime
   hasCompletedQuestionnaire Boolean         @default(false)
+  stage                     String?
   accounts                  Account[]
   sessions                  Session[]
   questionnaires            Questionnaire[]
+
 
   @@map("user")
 }
