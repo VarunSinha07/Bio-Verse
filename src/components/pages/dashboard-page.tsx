@@ -115,7 +115,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gradient-to-br from-green-100 to-blue-100 p-4 sm:p-6 md:p-8">
       <div className="w-full max-w-6xl mx-auto space-y-6">
         {/* User Welcome Section */}
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
           <Card className="bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-shadow duration-300">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-2xl text-green-600">
@@ -130,7 +130,7 @@ export default function DashboardPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
         >
           <Card className="bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-shadow duration-300">
             <CardHeader>
