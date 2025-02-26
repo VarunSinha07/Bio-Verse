@@ -1,19 +1,14 @@
 "use client"
 
 import { Button } from "../ui/button"
-import { authClient } from "@/lib/auth-client"
-import { redirect } from "next/navigation"
+// import { authClient } from "@/lib/auth-client"
+// import { redirect } from "next/navigation"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { ModeToggle } from "../mode-toggle"
 import Image from "next/image"
 import { useState } from "react"
 import { IoMenu, IoClose } from "react-icons/io5"
-
-const handleClick = () => {
-  authClient.signOut()
-  redirect("/sign-in")
-}
 
 const Navbar = () => {
   const pathname = usePathname()
