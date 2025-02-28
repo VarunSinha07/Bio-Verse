@@ -67,7 +67,9 @@ export async function POST(req: Request) {
       // Update user's questionnaire status
       prisma.user.update({
         where: { id: data.userId },
-        data: { hasCompletedQuestionnaire: true },
+        data: { hasCompletedQuestionnaire: true,
+          stage: "1",
+         },
       }),
     ]);
 

@@ -11,12 +11,14 @@ model User {
   id                        String          @id
   email                     String          @unique
   name                      String?
+  userRole                  String?         @default("user")
   emailVerified             Boolean
   image                     String?
   createdAt                 DateTime
   updatedAt                 DateTime
   hasCompletedQuestionnaire Boolean         @default(false)
   stage                     String?
+  status                    String?
   accounts                  Account[]
   sessions                  Session[]
   questionnaires            Questionnaire[]
