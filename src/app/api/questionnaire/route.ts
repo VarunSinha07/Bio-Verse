@@ -1,4 +1,4 @@
-// app/api/questionnaire/route.ts
+
 import { NextResponse } from 'next/server';
 import { QuestionnaireFormData } from '@/types/questionnaire';
 import prisma from '@/lib/prisma';
