@@ -35,7 +35,7 @@ export async function GET(request: Request) {
           },
           take: 1,
         },
-      },
+     },
     });
 
     if (!user) {

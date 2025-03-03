@@ -7,7 +7,7 @@ import { ModeToggle } from "../mode-toggle"
 import Image from "next/image"
 import { useState} from "react"
 import { IoMenu, IoClose } from "react-icons/io5"
-import { useSession} from "@/lib/auth-client"
+import { useSession, signOut} from "@/lib/auth-client"
 
 const Navbar = () => {
   const pathname = usePathname()
@@ -36,9 +36,13 @@ const Navbar = () => {
   const navItems = isSignedIn ? authenticatedNavItems : unauthenticatedNavItems
 
   const handleSignOut = async () => {
-    await signOut()
-    router.push("/sign-in")
-  }
+    try {
+      await signOut();
+      router.push('/sign-in'); 
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
 
   interface NavItem {
     name: string;
@@ -203,25 +207,4 @@ const Navbar = () => {
     </nav>
   )
 }
-
 export default Navbar
-async function signOut() {
-  try {
-    const response = await fetch('/api/auth/sign-out', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    });
-
-    if (!response.ok) {
-      throw new Error('Sign out failed');
-    }
-
-    return response.json();
-  } catch (error) {
-    console.error('Sign out error:', error);
-    throw error;
-  }
-}
