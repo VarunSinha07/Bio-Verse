@@ -20,6 +20,7 @@ export async function GET(request: Request) {
         email: true,
         stage: true,
         status: true,
+        requestStatus: true,
         createdAt: true,
         questionnaires: {
           select: {
@@ -49,6 +50,7 @@ export async function GET(request: Request) {
       email: user.email,
       stage: user.stage || undefined,
       status: user.status || undefined,
+      requestStatus: user.requestStatus || undefined,
       createdAt: user.createdAt.toISOString(),
       questionnaire: user.questionnaires.length > 0 ? user.questionnaires[0] : undefined,
     };

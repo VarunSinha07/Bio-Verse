@@ -5,7 +5,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { CheckCircle, Minus, X } from 'lucide-react';
 import UserDetailsModal from './components/userDetailsModal';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 // Define interfaces first to avoid reference errors
 interface Questionnaire {
@@ -19,18 +21,21 @@ interface Questionnaire {
 
 interface User {
   id: string;
-  name?: string; // Changed from string | null to string | undefined to match modal component
+  name?: string;
   email: string;
   stage?: string;
   status?: string;
+  requestStatus?: string | null;
   createdAt?: string;
   questionnaire?: Questionnaire;
 }
 
 interface BasicUser {
   id: string;
-  name?: string; // Changed to match User interface
+  name?: string;
   email: string;
+  stage?: string;
+  requestStatus?: string | null;
   questionnaire?: {
     ideaTitle: string;
   } | null;
@@ -38,7 +43,10 @@ interface BasicUser {
 
 const AdminDashboard = () => {
   type TabStatus = 'stage2' | 'stage3' | 'preIncubation' | 'incubation';
+  type FilterStatus = 'all' | 'approved' | 'pending' | 'declined';
+  
   const [selectedTab, setSelectedTab] = useState<TabStatus>('stage2');
+  const [filter, setFilter] = useState<FilterStatus>('all');
   const [users, setUsers] = useState<BasicUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -52,14 +60,17 @@ const AdminDashboard = () => {
     incubation: 'Incubation/Pre-incubation'
   }), []);
 
+  // Removed unused stageMapping variable
+
   interface FetchUsersProps {
     status: string;
+    filter: FilterStatus;
   }
 
-  const fetchUsers = React.useCallback(async (status: FetchUsersProps['status']): Promise<void> => {
+  const fetchUsers = React.useCallback(async ({ status, filter }: FetchUsersProps): Promise<void> => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/admin/users?status=${encodeURIComponent(status)}`);
+      const response = await fetch(`/api/admin/users?status=${encodeURIComponent(status)}&filter=${filter}`);
       if (!response.ok) {
         throw new Error('Failed to fetch users');
       }
@@ -73,8 +84,8 @@ const AdminDashboard = () => {
   }, []);
 
   useEffect(() => {
-    fetchUsers(tabStatusMap[selectedTab]);
-  }, [selectedTab, tabStatusMap, fetchUsers]);
+    fetchUsers({ status: tabStatusMap[selectedTab], filter });
+  }, [selectedTab, filter, tabStatusMap, fetchUsers]);
 
   const handleViewDetails = async (userId: string): Promise<void> => {
     try {
@@ -90,9 +101,41 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleApproveRequest = async (userId: string, action: 'approve' | 'decline'): Promise<void> => {
+    try {
+      const response = await fetch('/api/admin/approve-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, action }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to ${action} user request`);
+      }
+
+      // Refresh the user details and list
+      await handleViewDetails(userId);
+      await fetchUsers({ status: tabStatusMap[selectedTab], filter });
+    } catch (error) {
+      console.error(`Error ${action}ing user request:`, error);
+    }
+  };
+
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedUser(null);
+  };
+
+  const getRequestStatusIcon = (user: BasicUser) => {
+    if (user.requestStatus === 'approved') {
+      return <CheckCircle className="h-5 w-5 text-green-600" />;
+    } else if (user.requestStatus === 'declined') {
+      return <X className="h-5 w-5 text-red-600" />;
+    } else {
+      return <Minus className="h-5 w-5 text-yellow-600" />;
+    }
   };
 
   return (
@@ -110,8 +153,24 @@ const AdminDashboard = () => {
         {Object.entries(tabStatusMap).map(([tab, status]) => (
           <TabsContent key={tab} value={tab}>
             <Card>
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>{status}</CardTitle>
+                <div className="w-48">
+                  <Select 
+                    value={filter} 
+                    onValueChange={(value) => setFilter(value as FilterStatus)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filter by status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="approved">Approved</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="declined">Declined</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </CardHeader>
               <CardContent>
                 {loading ? (
@@ -125,6 +184,7 @@ const AdminDashboard = () => {
                         <TableHead>Name</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>Idea Title</TableHead>
+                        <TableHead className="text-center">Request Status</TableHead>
                         <TableHead>Actions</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -134,6 +194,11 @@ const AdminDashboard = () => {
                           <TableCell>{user.name || 'N/A'}</TableCell>
                           <TableCell>{user.email}</TableCell>
                           <TableCell>{user.questionnaire?.ideaTitle || 'N/A'}</TableCell>
+                          <TableCell className="text-center">
+                            <div className="flex justify-center">
+                              {getRequestStatusIcon(user)}
+                            </div>
+                          </TableCell>
                           <TableCell>
                             <Button 
                               variant="outline" 
@@ -158,6 +223,7 @@ const AdminDashboard = () => {
           isOpen={isModalOpen} 
           onClose={closeModal}
           user={selectedUser}
+          onApproveRequest={handleApproveRequest}
         />
       )}
     </div>

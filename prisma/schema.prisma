@@ -19,10 +19,12 @@ model User {
   hasCompletedQuestionnaire Boolean         @default(false)
   stage                     String?
   status                    String?
+  requestStatus             String?         // Can be 'approve' or 'decline' or null (for pending)
   accounts                  Account[]
   sessions                  Session[]
   questionnaires            Questionnaire[]
-
+  businessPlans             BusinessPlan[]
+  documents                 Document[]
 
   @@map("user")
 }
@@ -75,7 +77,7 @@ model Questionnaire {
   id              String   @id @default(cuid())
   userId          String
   name            String
-  role            String @default("founder")
+  role            String   @default("founder")
   ideaTitle       String
   ideaDescription String   @db.Text
   startUpName     String?
@@ -90,3 +92,33 @@ model Questionnaire {
   @@map("questionnaire")
 }
 
+model BusinessPlan {
+  id                     String   @id @default(cuid())
+  userId                 String
+  problemStatement       String   @db.Text
+  targetAudience         String   @db.Text
+  revenueModel           String   @db.Text
+  uniqueValueProposition String   @db.Text
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @default(now()) @updatedAt
+  user                   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("business_plan")
+}
+
+model Document {
+  id                 String   @id @default(cuid())
+  userId             String
+  competitorAnalysis String?
+  foundersProfile    String?
+  productMockups     String?
+  marketResearch     String?
+  signedNDA          String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @default(now()) @updatedAt
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("document")
+}
