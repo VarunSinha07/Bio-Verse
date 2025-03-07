@@ -19,6 +19,20 @@ interface Questionnaire {
   ideaDescription: string;
 }
 
+interface BusinessPlan {
+  executiveSummary: string;
+  marketAnalysis: string;
+  financialProjections: string;
+  timeline: string;
+}
+
+interface Document {
+  id: string;
+  name: string;
+  url: string;
+  type: string;
+}
+
 interface User {
   id: string;
   name?: string;
@@ -28,6 +42,8 @@ interface User {
   requestStatus?: string | null;
   createdAt?: string;
   questionnaire?: Questionnaire;
+  businessPlan?: BusinessPlan;
+  documents?: Document[];
 }
 
 interface BasicUser {
@@ -103,20 +119,8 @@ const AdminDashboard = () => {
 
   const handleApproveRequest = async (userId: string, action: 'approve' | 'decline'): Promise<void> => {
     try {
-      const response = await fetch('/api/admin/approve-user', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId, action }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to ${action} user request`);
-      }
-
-      // Refresh the user details and list
-      await handleViewDetails(userId);
+      // The actual API call is now handled in UserDetailsModal
+      // This function is just to refresh the data
       await fetchUsers({ status: tabStatusMap[selectedTab], filter });
     } catch (error) {
       console.error(`Error ${action}ing user request:`, error);
