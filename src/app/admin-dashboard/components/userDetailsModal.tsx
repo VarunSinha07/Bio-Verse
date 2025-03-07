@@ -138,7 +138,9 @@ const UserDetailsModal = ({ isOpen, onClose, user, onApproveRequest }: UserDetai
     const fileUrl = doc.url.startsWith('http') 
       ? doc.url 
       : `${window.location.origin}${doc.url.startsWith('/') ? doc.url : `/uploads/${doc.url}`}`;
-    
+      if(fileUrl){
+        console.log(fileUrl);
+      }
     // Create a temporary anchor element to trigger the download
     const a = document.createElement('a');
     a.href = fileUrl;
