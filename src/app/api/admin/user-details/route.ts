@@ -86,36 +86,36 @@ export async function GET(request: Request) {
         financialProjections: user.businessPlans[0].revenueModel,
         timeline: user.businessPlans[0].uniqueValueProposition,
       } : undefined,
-      // Format documents data
+      // Format documents data with corrected URLs
       documents: user.documents.length > 0 ? [
         user.documents[0].competitorAnalysis && {
           id: `${user.id}-competitorAnalysis`,
           name: 'Competitor Analysis',
-          url: `/documents/${user.documents[0].competitorAnalysis}`,
+          url: `/uploads/${user.documents[0].competitorAnalysis}`,
           type: 'pdf'
         },
         user.documents[0].foundersProfile && {
           id: `${user.id}-foundersProfile`,
           name: 'Founders Profile',
-          url: `/documents/${user.documents[0].foundersProfile}`,
+          url: `/uploads/${user.documents[0].foundersProfile}`,
           type: 'pdf'
         },
         user.documents[0].productMockups && {
           id: `${user.id}-productMockups`,
           name: 'Product Mockups',
-          url: `/documents/${user.documents[0].productMockups}`,
+          url: `/uploads/${user.documents[0].productMockups}`,
           type: 'pdf'
         },
         user.documents[0].marketResearch && {
           id: `${user.id}-marketResearch`,
           name: 'Market Research',
-          url: `/documents/${user.documents[0].marketResearch}`,
+          url: `/uploads/${user.documents[0].marketResearch}`,
           type: 'pdf'
         },
         user.documents[0].signedNDA && {
           id: `${user.id}-signedNDA`,
           name: 'Signed NDA',
-          url: `/documents/${user.documents[0].signedNDA}`,
+          url: `/uploads/${user.documents[0].signedNDA}`,
           type: 'pdf'
         }
       ].filter(Boolean) : [],

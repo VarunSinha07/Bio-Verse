@@ -134,21 +134,13 @@ const UserDetailsModal = ({ isOpen, onClose, user, onApproveRequest }: UserDetai
   };
 
   const handleDownloadDocument = (doc: Document) => {
-    // Create a proper download link with the correct base URL
+    // Construct the proper URL for the document
     const fileUrl = doc.url.startsWith('http') 
       ? doc.url 
-      : `${window.location.origin}${doc.url.startsWith('/') ? doc.url : `/uploads/${doc.url}`}`;
-      if(fileUrl){
-        console.log(fileUrl);
-      }
-    // Create a temporary anchor element to trigger the download
-    const a = document.createElement('a');
-    a.href = fileUrl;
-    a.download = doc.name; // Set the download attribute to suggest filename
-    a.target = '_blank';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+      : `${window.location.origin}${doc.url}`;
+    
+    // Open the document in a new tab
+    window.open(fileUrl, '_blank');
   };
 
   const isRequestProcessed = user.requestStatus === 'approved' || user.requestStatus === 'declined';
