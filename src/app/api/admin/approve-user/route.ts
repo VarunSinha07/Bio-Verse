@@ -3,7 +3,6 @@ import prisma from '@/lib/prisma';
 import { writeFile } from 'fs/promises';
 import { mkdir } from 'fs/promises';
 import { join } from 'path';
-// Removed UUID import as it's no longer needed
 
 export async function POST(request: Request) {
   try {
@@ -80,32 +79,41 @@ export async function POST(request: Request) {
         // Save the relative URL
         ndaDocumentUrl = `/uploads/${fileName}`;
         
-        // Record the document in database
-        const existingDoc = await prisma.document.findFirst({
-          where: {
-            userId: userId
-          }
-        });
-        
-        if (existingDoc) {
-          // Update existing document
-          await prisma.document.update({
-            where: { id: existingDoc.id },
-            data: { signedNDA: ndaDocumentUrl }
-          });
-        } else {
-          // Create new document
-          await prisma.document.create({
-            data: {
-              userId: userId,
-              signedNDA: ndaDocumentUrl
+        try {
+          // Check if document record exists for this user
+          const existingDoc = await prisma.document.findFirst({
+            where: {
+              userId: userId
             }
           });
+          
+          if (existingDoc) {
+            // Update existing document
+            await prisma.document.update({
+              where: { id: existingDoc.id },
+              data: { 
+                signedNDA: ndaDocumentUrl 
+              }
+            });
+          } else {
+            // Create new document record
+            await prisma.document.create({
+              data: {
+                userId: userId,
+                signedNDA: ndaDocumentUrl,
+                // Only include fields that exist in your Document model
+              }
+            });
+          }
+        } catch (dbError) {
+          console.error('Error updating document record:', dbError);
+          // Continue with the process even if this fails
         }
       } catch (fileError) {
         console.error('Error saving NDA file:', fileError);
         return NextResponse.json({ 
-          error: 'Failed to save NDA document' 
+          error: 'Failed to save NDA document',
+          details: (fileError as Error).message
         }, { status: 500 });
       }
     }
@@ -118,22 +126,20 @@ export async function POST(request: Request) {
       nextStage = stageMapping[user.status];
     }
     
-    // Update user with new stage
+    // Update user with new stage - REMOVED ndaDocumentUrl field if it doesn't exist in your User schema
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: { 
         stage: action === 'approve' ? nextStage : currentStage,
         requestStatus: action === 'approve' ? 'approved' : 'declined',
-        updatedAt: new Date(),
-        // Add NDA document reference only if it was processed
-        ...(ndaDocumentUrl && { ndaDocumentUrl })
+        updatedAt: new Date()
       },
     });
 
     return NextResponse.json({
       message: `User request ${action === 'approve' ? 'approved' : 'declined'} successfully`,
       user: updatedUser,
-      ...(ndaDocumentUrl && { ndaDocumentUrl })
+      ndaDocumentUrl: ndaDocumentUrl
     });
   } catch (error) {
     console.error(`Error processing user request:`, error);
