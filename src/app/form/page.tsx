@@ -21,6 +21,9 @@ const Page = async () => {
   if (user.userRole === 'admin') {
     redirect('/admin-dashboard');
   }
+  if (user.userRole === 'mentor') {
+    redirect('/mentor-dashboard');
+  }
 
   if (!user.hasCompletedQuestionnaire) {
     return <QuestionnairePage />;
