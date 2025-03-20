@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
   try {
-    // Get user session to verify authentication
+    
     const session = await Session();
     
     if (!session || !session.user || !session.user.id) {

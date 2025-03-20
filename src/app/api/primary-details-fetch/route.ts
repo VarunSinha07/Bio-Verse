@@ -1,4 +1,3 @@
-// app/api/dashboard/route.ts
 import { Session } from '@/lib/session';
 import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
