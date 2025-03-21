@@ -1,15 +1,15 @@
 // app/api/mentor/schedule-meeting/route.ts
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-
+import { Session } from '@/lib/session';
 
 export async function POST(request: Request) {
   try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session || session.user.userRole !== 'mentor') {
+    const sessionResult = await Session();
+    if (!sessionResult) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const { user } = sessionResult;
 
     const { userId, meetingDate, meetingTime, meetingLink } = await request.json();
 
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
           date: new Date(meetingDate),
           time: meetingTime,
           link: meetingLink,
-          mentorId: session.user.id,
+          mentorId: user.id,
           updatedAt: new Date()
         }
       });
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
           date: new Date(meetingDate),
           time: meetingTime,
           link: meetingLink,
-          mentorId: session.user.id
+          mentorId: user.id
         }
       });
     }

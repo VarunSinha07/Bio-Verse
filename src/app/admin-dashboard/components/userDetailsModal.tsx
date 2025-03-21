@@ -206,6 +206,7 @@ const UserDetailsModal = ({ isOpen, onClose, user, onApproveRequest }: UserDetai
                   {questionnaire.startUpName || 'N/A'}
                 </div>
                 <div>
+                  
                   <span className="font-medium">Website:</span>{' '}
                   {questionnaire.website || 'N/A'}
                 </div>
