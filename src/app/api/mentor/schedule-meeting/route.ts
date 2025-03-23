@@ -1,4 +1,3 @@
-// app/api/mentor/schedule-meeting/route.ts
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { Session } from '@/lib/session';
