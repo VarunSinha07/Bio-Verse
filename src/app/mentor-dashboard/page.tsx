@@ -135,7 +135,7 @@ const MentorDashboard = () => {
     }
   };
 
-  const handleScheduleMeeting = async (userId: string): Promise<void> => {
+  const handleScheduleMeeting = async (): Promise<void> => {
     try {
       await fetchUsers({ stage: tabStageMap[selectedTab], filter });
     } catch (error) {
