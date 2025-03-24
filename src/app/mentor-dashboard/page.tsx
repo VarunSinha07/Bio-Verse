@@ -5,9 +5,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Calendar, Video } from 'lucide-react';
+import { Calendar, Video, CheckCircle } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import MentorUserDetailsModal from './components/mentorUserDetailsModal';
+import FeedbackModal from './components/feedbackModal';
 
 // Define interfaces
 interface Questionnaire {
@@ -33,6 +34,21 @@ interface Document {
   type: string;
 }
 
+interface Feedback {
+  id?: string;
+  feedbackText: string;
+  decision: string;
+}
+
+interface Meeting {
+  id: string;
+  date: string;
+  time: string;
+  link: string;
+  isCompleted: boolean;
+  feedback?: Feedback;
+}
+
 interface User {
   id: string;
   name?: string;
@@ -44,11 +60,7 @@ interface User {
   questionnaire?: Questionnaire;
   businessPlan?: BusinessPlan;
   documents?: Document[];
-  nextMeeting?: {
-    date: string;
-    time: string;
-    link: string;
-  } | null;
+  nextMeeting?: Meeting | null;
 }
 
 interface BasicUser {
@@ -61,15 +73,12 @@ interface BasicUser {
     ideaTitle: string;
     startUpName?: string;
   } | null;
-  nextMeeting?: {
-    date: string;
-    time: string;
-  } | null;
+  nextMeeting?: Meeting | null;
 }
 
 const MentorDashboard = () => {
   type TabStage = 'stage3' | 'stage4' | 'incubation';
-  type FilterStatus = 'all' | 'scheduled' | 'pending';
+  type FilterStatus = 'all' | 'scheduled' | 'pending' | 'completed';
   
   const [selectedTab, setSelectedTab] = useState<TabStage>('stage3');
   const [filter, setFilter] = useState<FilterStatus>('all');
@@ -77,6 +86,8 @@ const MentorDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
 
   // Define the stage mappings for each tab
   const tabStageMap = React.useMemo(() => ({
@@ -132,9 +143,27 @@ const MentorDashboard = () => {
     }
   };
 
+  const handleOpenFeedbackModal = (user: BasicUser) => {
+    if (user.nextMeeting) {
+      setSelectedMeeting(user.nextMeeting);
+      setSelectedUser({ id: user.id, email: user.email, name: user.name });
+      setIsFeedbackModalOpen(true);
+    }
+  };
+
+  const handleFeedbackSubmit = async () => {
+    await fetchUsers({ stage: tabStageMap[selectedTab], filter });
+    setIsFeedbackModalOpen(false);
+  };
+
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedUser(null);
+  };
+
+  const closeFeedbackModal = () => {
+    setIsFeedbackModalOpen(false);
+    setSelectedMeeting(null);
   };
 
   const formatMeetingDate = (date: string) => {
@@ -143,10 +172,41 @@ const MentorDashboard = () => {
 
   const getMeetingStatusDisplay = (user: BasicUser) => {
     if (user.nextMeeting) {
+      if (user.nextMeeting.isCompleted) {
+        return (
+          <div className="flex items-center gap-2">
+            <CheckCircle className="h-4 w-4 text-green-600" />
+            <span>Completed</span>
+          </div>
+        );
+      }
+      
+      
       return (
-        <div className="flex items-center gap-2">
-          <Calendar className="h-4 w-4 text-green-600" />
-          <span>{formatMeetingDate(user.nextMeeting.date)} at {user.nextMeeting.time}</span>
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-blue-600" />
+            <span>{formatMeetingDate(user.nextMeeting.date)} at {user.nextMeeting.time}</span>
+          </div>
+          <div className="flex gap-2 mt-1">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="flex items-center gap-1"
+              onClick={() => window.open(user.nextMeeting?.link, '_blank')}
+            >
+              <Video className="h-3 w-3" />
+              Join
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="flex items-center gap-1"
+              onClick={() => handleOpenFeedbackModal(user)}
+            >
+              Feedback
+            </Button>
+          </div>
         </div>
       );
     }
@@ -181,6 +241,7 @@ const MentorDashboard = () => {
                       <SelectItem value="all">All</SelectItem>
                       <SelectItem value="scheduled">Scheduled</SelectItem>
                       <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="completed">Completed</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -221,7 +282,7 @@ const MentorDashboard = () => {
                               className="flex items-center gap-2"
                             >
                               <Video className="h-4 w-4" />
-                              {user.nextMeeting ? 'Reschedule' : 'Schedule'}
+                              {user.nextMeeting && !user.nextMeeting.isCompleted ? 'Reschedule' : 'Schedule'}
                             </Button>
                           </TableCell>
                         </TableRow>
@@ -241,6 +302,16 @@ const MentorDashboard = () => {
           onClose={closeModal}
           user={selectedUser}
           onScheduleMeeting={handleScheduleMeeting}
+        />
+      )}
+
+      {selectedMeeting && selectedUser && (
+        <FeedbackModal
+          isOpen={isFeedbackModalOpen}
+          onClose={closeFeedbackModal}
+          meeting={selectedMeeting}
+          user={selectedUser}
+          onSubmit={handleFeedbackSubmit}
         />
       )}
     </div>

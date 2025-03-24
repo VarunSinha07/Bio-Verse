@@ -26,6 +26,7 @@ model User {
   businessPlans             BusinessPlan[]
   documents                 Document[]
   meetings                  Meeting[]
+  feedbacks                 Feedback[]      // New relation for feedback
 
   @@map("user")
 }
@@ -125,16 +126,34 @@ model Document {
 }
 
 model Meeting {
-  id        String   @id @default(cuid())
-  userId    String
-  mentorId  String?
-  date      DateTime
-  time      String
-  link      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          String    @id @default(cuid())
+  userId      String
+  mentorId    String?
+  date        DateTime
+  time        String
+  link        String
+  isCompleted Boolean   @default(false)  // Flag to track completed meetings
+  feedback    Feedback? // One-to-one relation with feedback
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("meeting")
+}
+
+// New model for meeting feedback
+model Feedback {
+  id         String   @id @default(cuid())
+  meetingId  String   @unique
+  userId     String
+  feedbackText String  @db.Text
+  decision   String   // 'approve', 'decline'
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+  meeting    Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("feedback")
 }
