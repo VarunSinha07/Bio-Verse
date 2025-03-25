@@ -62,8 +62,25 @@ export async function GET(request: Request) {
           },
           take: 1,
         },
+        feedbacks: {
+          select: {
+            id: true,
+            feedbackText: true,
+            decision: true,
+            meeting: {
+              select: {
+                mentorId: true, // Fetch mentorId to potentially get mentor details
+              }
+            }
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+          take: 1,
+        },
       },
     });
+
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -119,7 +136,18 @@ export async function GET(request: Request) {
           type: 'pdf'
         }
       ].filter(Boolean) : [],
+      feedback: user.feedbacks.length > 0 ? [
+        {
+          id: user.feedbacks[0].id,
+          feedbackText: user.feedbacks[0].feedbackText,
+          decision: user.feedbacks[0].decision,
+          mentor: user.feedbacks[0].meeting?.mentorId 
+            ? { name: 'Mentor Name' } // You might want to fetch actual mentor name from another model
+            : undefined
+        }
+      ] : undefined,
     };
+  
 
     return NextResponse.json(formattedUser);
   } catch (error) {

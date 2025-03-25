@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { CheckCircle, Minus, X } from 'lucide-react';
 import UserDetailsModal from './components/userDetailsModal';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { toast } from '@/hooks/use-toast';
 
 // Define interfaces first to avoid reference errors
 interface Questionnaire {
@@ -125,6 +126,47 @@ const AdminDashboard = () => {
       console.error(`Error ${action}ing user request:`, error);
     }
   };
+  const handleAllocateRequest = async (
+    userId: string, 
+    action: 'incubation' | 'pre-incubation' | 'decline'
+  ): Promise<void> => {
+    try {
+      const response = await fetch('/api/admin/allocate-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, action }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to allocate user');
+      }
+
+      // Refresh the users list
+      await fetchUsers({ status: tabStatusMap[selectedTab], filter });
+
+      toast({
+        title: "Allocation Successful",
+        description: `User has been ${
+          action === 'incubation' 
+            ? 'allocated to Incubation' 
+            : action === 'pre-incubation' 
+            ? 'allocated to Pre-Incubation' 
+            : 'declined'
+        }.`,
+        variant: action === 'decline' ? "destructive" : "default"
+      });
+    } catch (error) {
+      console.error(`Error allocating user:`, error);
+      toast({
+        title: "Error",
+        description: "There was an error allocating the user. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -227,6 +269,7 @@ const AdminDashboard = () => {
           onClose={closeModal}
           user={selectedUser}
           onApproveRequest={handleApproveRequest}
+          onAllocateRequest={selectedTab === 'stage4' ? handleAllocateRequest : undefined}
         />
       )}
     </div>

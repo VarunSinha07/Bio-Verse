@@ -35,6 +35,15 @@ interface Document {
   type: string;
 }
 
+interface Feedback {
+  id: string;
+  feedbackText: string;
+  decision: string;
+  mentor?: {
+    name?: string;
+  };
+}
+
 interface User {
   id: string;
   name?: string;
@@ -46,6 +55,7 @@ interface User {
   questionnaire?: Questionnaire;
   businessPlan?: BusinessPlan;
   documents?: Document[];
+  feedback?: Feedback[];
 }
 
 interface UserDetailsModalProps {
@@ -53,9 +63,10 @@ interface UserDetailsModalProps {
   onClose: () => void;
   user: User;
   onApproveRequest: (userId: string, action: 'approve' | 'decline') => Promise<void>;
+  onAllocateRequest?: (userId: string, action: 'incubation' | 'pre-incubation' | 'decline') => Promise<void>;
 }
 
-const UserDetailsModal = ({ isOpen, onClose, user, onApproveRequest }: UserDetailsModalProps) => {
+const UserDetailsModal = ({ isOpen, onClose, user, onApproveRequest, onAllocateRequest }: UserDetailsModalProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [ndaFile, setNdaFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -66,6 +77,40 @@ const UserDetailsModal = ({ isOpen, onClose, user, onApproveRequest }: UserDetai
   const businessPlan = user.businessPlan;
   const documents = user.documents || [];
   const isStage3Application = user.status === 'Applied for Stage 3';
+  const isStage4Application = user.status === 'Applied for Stage 4';
+  const feedback = user.feedback?.[0];
+
+  const handleAllocateRequest = async (action: 'incubation' | 'pre-incubation' | 'decline') => {
+    if (!onAllocateRequest) return;
+
+    setIsProcessing(true);
+    try {
+      await onAllocateRequest(user.id, action);
+      
+      toast({
+        title: "Allocation Completed",
+        description: `User has been ${
+          action === 'incubation' 
+            ? 'allocated to Incubation' 
+            : action === 'pre-incubation' 
+            ? 'allocated to Pre-Incubation' 
+            : 'declined'
+        }.`,
+        variant: action === 'decline' ? "destructive" : "default"
+      });
+
+      onClose();
+    } catch (error) {
+      console.error('Error processing allocation:', error);
+      toast({
+        title: "Error",
+        description: "There was an error processing the allocation. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
   
   const handleApproveRequest = async (action: 'approve' | 'decline') => {
     if (action === 'approve' && isStage3Application && !ndaFile) {
@@ -321,8 +366,63 @@ const UserDetailsModal = ({ isOpen, onClose, user, onApproveRequest }: UserDetai
           </div>
         )}
 
+        {!isRequestProcessed && !isStage4Application && (
+          <div className="mt-6">
+            <>
+              <Button 
+                onClick={() => handleApproveRequest('approve')} 
+                disabled={isProcessing}
+                className="bg-green-600 hover:bg-green-700 mr-2"
+              >
+                Approve Request
+              </Button>
+              <Button 
+                onClick={() => handleApproveRequest('decline')} 
+                disabled={isProcessing}
+                variant="destructive"
+                className="mr-2"
+              >
+                Decline
+              </Button>
+            </>
+          </div>
+        )}
+          {/* Mentor Feedback Section - Only for Stage 4 Applications */}
+        {isStage4Application && feedback && (
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold mb-2">Mentor Feedback</h3>
+            <div className="border rounded-lg p-4 space-y-3">
+              <div>
+                <span className="font-medium">Mentor Name:</span>{' '}
+                {feedback.mentor?.name || 'N/A'}
+              </div>
+              <div>
+                <span className="font-medium">Feedback:</span>
+                <div className="mt-1 whitespace-pre-wrap">{feedback.feedbackText}</div>
+              </div>
+              <div>
+                <span className="font-medium">Decision:</span>{' '}
+                {feedback.decision === 'approve-incubation' ? (
+                  <span className="text-green-600 flex items-center">
+                  <CheckCircle className="h-4 w-4 mr-1" /> Approved for Incubation
+                  </span>
+                ) : feedback.decision === 'approve-pre-incubation' ? (
+                  <span className="text-green-600 flex items-center">
+                  <CheckCircle className="h-4 w-4 mr-1" /> Approved for Pre-Incubation
+                  </span>
+                ) : (
+                  <span className="text-red-600 flex items-center">
+                  <X className="h-4 w-4 mr-1" /> Declined
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         <DialogFooter className="mt-6">
-          {!isRequestProcessed && (
+          {/* Existing approve/decline buttons for Stage 3 */}
+          {!isRequestProcessed && isStage3Application && (
             <>
               <Button 
                 onClick={() => handleApproveRequest('approve')} 
@@ -341,6 +441,35 @@ const UserDetailsModal = ({ isOpen, onClose, user, onApproveRequest }: UserDetai
               </Button>
             </>
           )}
+
+          {/* New allocation buttons for Stage 4 */}
+          {isStage4Application && onAllocateRequest && (
+            <>
+              <Button 
+                onClick={() => handleAllocateRequest('incubation')} 
+                disabled={isProcessing}
+                className="bg-green-600 hover:bg-green-700 mr-2"
+              >
+                Allocate for Incubation
+              </Button>
+              <Button 
+                onClick={() => handleAllocateRequest('pre-incubation')} 
+                disabled={isProcessing}
+                className="bg-blue-600 hover:bg-blue-700 mr-2"
+              >
+                Allocate for Pre-Incubation
+              </Button>
+              <Button 
+                onClick={() => handleAllocateRequest('decline')} 
+                disabled={isProcessing}
+                variant="destructive"
+                className="mr-2"
+              >
+                Decline
+              </Button>
+            </>
+          )}
+
           <Button onClick={onClose} variant="outline">Close</Button>
         </DialogFooter>
       </DialogContent>
