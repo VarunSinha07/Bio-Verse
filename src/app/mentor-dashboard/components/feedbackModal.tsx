@@ -49,7 +49,7 @@ interface FeedbackModalProps {
 const FeedbackModal = ({ isOpen, onClose, meeting, user, onSubmit }: FeedbackModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState(meeting.feedback?.feedbackText || "");
-  const [decision, setDecision] = useState(meeting.feedback?.decision || "approve");
+  const [decision, setDecision] = useState(meeting.feedback?.decision || "decline");
 
   const handleSubmit = async () => {
     if (!feedback) {
@@ -128,17 +128,24 @@ const FeedbackModal = ({ isOpen, onClose, meeting, user, onSubmit }: FeedbackMod
             <Label>Decision</Label>
             <RadioGroup value={decision} onValueChange={setDecision} className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
-                <RadioGroupItem id="approve" value="approve" />
-                <Label htmlFor="approve" className="flex items-center gap-1 cursor-pointer">
+                <RadioGroupItem id="approve-incubation" value="approve-incubation" />
+                <Label htmlFor="approve-incubation" className="flex items-center gap-1 cursor-pointer">
                   <CheckCircle className="h-4 w-4 text-green-600" />
-                  Approve to next stage
+                  Approve for Incubation
+                </Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <RadioGroupItem id="approve-pre-incubation" value="approve-pre-incubation" />
+                <Label htmlFor="approve-pre-incubation" className="flex items-center gap-1 cursor-pointer">
+                  <CheckCircle className="h-4 w-4 text-blue-600" />
+                  Approve for Pre-Incubation
                 </Label>
               </div>
               <div className="flex items-center gap-2">
                 <RadioGroupItem id="decline" value="decline" />
                 <Label htmlFor="decline" className="flex items-center gap-1 cursor-pointer">
                   <XCircle className="h-4 w-4 text-red-600" />
-                  Needs more work
+                  Decline
                 </Label>
               </div>
             </RadioGroup>
@@ -150,7 +157,13 @@ const FeedbackModal = ({ isOpen, onClose, meeting, user, onSubmit }: FeedbackMod
           <Button 
             onClick={handleSubmit} 
             disabled={isSubmitting}
-            className={decision === "approve" ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"}
+            className={
+              decision === "approve-incubation" 
+                ? "bg-green-600 hover:bg-green-700" 
+                : decision === "approve-pre-incubation"
+                ? "bg-blue-600 hover:bg-blue-700"
+                : "bg-red-600 hover:bg-red-700"
+            }
           >
             {isSubmitting ? "Submitting..." : "Submit Feedback"}
           </Button>

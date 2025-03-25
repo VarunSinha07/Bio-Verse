@@ -58,7 +58,7 @@ interface BasicUser {
 }
 
 const AdminDashboard = () => {
-  type TabStatus = 'stage2' | 'stage3' | 'preIncubation' | 'incubation';
+  type TabStatus = 'stage2' | 'stage3' | 'stage4' | 'incubation';
   type FilterStatus = 'all' | 'approved' | 'pending' | 'declined';
   
   const [selectedTab, setSelectedTab] = useState<TabStatus>('stage2');
@@ -73,8 +73,7 @@ const AdminDashboard = () => {
     stage2: 'Applied for Stage 2',
     stage3: 'Applied for Stage 3',
     stage4: 'Applied for Stage 4',
-    preIncubation: 'Applied for Incubation/Pre Incubation',
-    incubation: 'Incubation/Pre-incubation'
+    incubation: 'In Incubation / Pre-incubation',
   }), []);
 
   
@@ -147,12 +146,11 @@ const AdminDashboard = () => {
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
       
       <Tabs defaultValue="stage2" value={selectedTab} onValueChange={(value) => setSelectedTab(value as TabStatus)}>
-        <TabsList className="grid grid-cols-5 mb-8">
+        <TabsList className="grid grid-cols-4 mb-8">
           <TabsTrigger value="stage2">Applied for Stage 2</TabsTrigger>
           <TabsTrigger value="stage3">Applied for Stage 3</TabsTrigger>
           <TabsTrigger value="stage4">Applied for Stage 4</TabsTrigger>
-          <TabsTrigger value="preIncubation">Applied for Incubation</TabsTrigger>
-          <TabsTrigger value="incubation">In Incubation</TabsTrigger>
+          <TabsTrigger value="incubation">In Incubation / Pre-Incubation</TabsTrigger>
         </TabsList>
 
         {Object.entries(tabStatusMap).map(([tab, status]) => (

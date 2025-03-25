@@ -68,26 +68,25 @@ export async function POST(req: Request) {
                 },
             });
         }
-        if (decision === 'approve') {
+        
+        // Only update status for Incubation and Pre-Incubation approvals
+        if (decision === 'approve-incubation' || decision === 'approve-pre-incubation') {
             await prisma.user.update({
-            where: {
-                id: feedback.userId,
-            },
-            data: {
-                status: `Applied for Stage ${Number(user.stage) + 1}`,
-                requestStatus: '',
-            },
+                where: {
+                    id: feedback.userId,
+                },
+                data: {
+                    status: `Applied for Stage 4`,
+                    requestStatus: '',
+                },
             });
         }
-        
         
         // Mark meeting as completed
         await prisma.meeting.update({
             where: { id: meetingId },
             data: { isCompleted: true },
         });
-
-       
        
         return NextResponse.json(
             { success: true, feedback },
