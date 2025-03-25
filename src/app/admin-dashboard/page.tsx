@@ -72,11 +72,12 @@ const AdminDashboard = () => {
   const tabStatusMap = React.useMemo(() => ({
     stage2: 'Applied for Stage 2',
     stage3: 'Applied for Stage 3',
+    stage4: 'Applied for Stage 4',
     preIncubation: 'Applied for Incubation/Pre Incubation',
     incubation: 'Incubation/Pre-incubation'
   }), []);
 
-  // Removed unused stageMapping variable
+  
 
   interface FetchUsersProps {
     status: string;
@@ -119,8 +120,7 @@ const AdminDashboard = () => {
 
   const handleApproveRequest = async (userId: string, action: 'approve' | 'decline'): Promise<void> => {
     try {
-      // The actual API call is now handled in UserDetailsModal
-      // This function is just to refresh the data
+     
       await fetchUsers({ status: tabStatusMap[selectedTab], filter });
     } catch (error) {
       console.error(`Error ${action}ing user request:`, error);
@@ -147,9 +147,10 @@ const AdminDashboard = () => {
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
       
       <Tabs defaultValue="stage2" value={selectedTab} onValueChange={(value) => setSelectedTab(value as TabStatus)}>
-        <TabsList className="grid grid-cols-4 mb-8">
+        <TabsList className="grid grid-cols-5 mb-8">
           <TabsTrigger value="stage2">Applied for Stage 2</TabsTrigger>
           <TabsTrigger value="stage3">Applied for Stage 3</TabsTrigger>
+          <TabsTrigger value="stage4">Applied for Stage 4</TabsTrigger>
           <TabsTrigger value="preIncubation">Applied for Incubation</TabsTrigger>
           <TabsTrigger value="incubation">In Incubation</TabsTrigger>
         </TabsList>

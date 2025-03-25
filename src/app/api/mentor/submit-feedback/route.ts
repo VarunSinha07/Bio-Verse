@@ -68,6 +68,18 @@ export async function POST(req: Request) {
                 },
             });
         }
+        if (decision === 'approve') {
+            await prisma.user.update({
+            where: {
+                id: feedback.userId,
+            },
+            data: {
+                status: `Applied for Stage ${Number(user.stage) + 1}`,
+                requestStatus: '',
+            },
+            });
+        }
+        
         
         // Mark meeting as completed
         await prisma.meeting.update({

@@ -239,8 +239,8 @@ const MentorDashboard = () => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="unscheduled">Unscheduled</SelectItem>
                       <SelectItem value="scheduled">Scheduled</SelectItem>
-                      <SelectItem value="pending">Pending</SelectItem>
                       <SelectItem value="completed">Completed</SelectItem>
                     </SelectContent>
                   </Select>
@@ -257,7 +257,7 @@ const MentorDashboard = () => {
                       <TableRow>
                         <TableHead>Name</TableHead>
                         <TableHead>Email</TableHead>
-                        <TableHead>Startup / Idea</TableHead>
+                        <TableHead>Idea</TableHead>
                         <TableHead>Meeting Status</TableHead>
                         <TableHead>Actions</TableHead>
                       </TableRow>
@@ -267,7 +267,7 @@ const MentorDashboard = () => {
                         <TableRow key={user.id}>
                           <TableCell>{user.name || 'N/A'}</TableCell>
                           <TableCell>{user.email}</TableCell>
-                          <TableCell>{user.questionnaire?.startUpName || user.questionnaire?.ideaTitle || 'N/A'}</TableCell>
+                          <TableCell>{user.questionnaire?.ideaTitle || 'N/A'}</TableCell>
                           <TableCell>{getMeetingStatusDisplay(user)}</TableCell>
                           <TableCell className="flex gap-2">
                             <Button 
