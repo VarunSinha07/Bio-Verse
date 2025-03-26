@@ -23,13 +23,15 @@ import {
   X,
   Clock,
   Video,
+  ListChecks,
 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
-
+import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
 
 interface Questionnaire {
   name: string
@@ -63,9 +65,10 @@ interface MentorSession {
 }
 
 interface ProgramAllotment {
-  acceptanceConfirmation: boolean
+  programAllocated: string
   startDate: string
   resourceRequirements: string
+  acceptanceConfirmation: boolean
 }
 interface DashboardData {
   questionnaire: Questionnaire
@@ -76,6 +79,7 @@ interface DashboardData {
   meeting?: Meeting
   currentStage: number
   status: string
+  programAllocated : string
 }
 
 interface Meeting {
@@ -268,6 +272,15 @@ export default function DashboardPage() {
     signedNDA?: boolean
   }>({})
 
+  const [programAllotmentForm, setProgramAllotmentForm] = useState<ProgramAllotment>({
+    programAllocated: "",
+    startDate: "",
+    resourceRequirements: "",
+    acceptanceConfirmation: false,
+  })
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false)
+  
+
   useEffect(() => {
     async function fetchDashboardData() {
       if (session?.data?.user?.id) {
@@ -299,6 +312,7 @@ export default function DashboardPage() {
                 questionnaire: primaryData.questionnaire,
                 currentStage: stage,
                 status: status,
+                programAllocated: "" // Add empty string as default value
               }
 
               setDashboardData(initialDashboardData)
@@ -649,6 +663,56 @@ export default function DashboardPage() {
     }
   }
 
+  const handleProgramAllotmentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setShowConfirmDialog(true)
+  }
+
+  const handleConfirmSubmission = async (accept: boolean) => {
+    setIsSubmitting(true)
+    setShowConfirmDialog(false)
+
+    try {
+      const response = await fetch("/api/fetch-program-allotment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...programAllotmentForm,
+          acceptanceConfirmation: accept,
+        }),
+      })
+      if (!response.ok) {
+        throw new Error("Failed to submit program allotment")
+      }
+
+      toast({
+        title: accept ? "Program Accepted" : "Program Declined",
+        description: accept 
+          ? "Your program acceptance has been confirmed. Reloading page..." 
+          : "Your response has been recorded.",
+        duration: 3000,
+      })
+
+      if (accept) {
+        // Reload page after successful acceptance
+        setTimeout(() => {
+          window.location.reload()
+        }, 1500)
+      }
+    } catch (error) {
+      console.error("Error:", error)
+      toast({
+        title: "Error",
+        description: "Failed to submit program response",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   if (isPending || loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-green-400 via-blue-400 to-blue-500">
@@ -684,7 +748,7 @@ export default function DashboardPage() {
     )
   }
 
-  const { questionnaire, businessPlan, programAllotment, currentStage, status } = dashboardData
+  const { questionnaire, businessPlan, currentStage, status } = dashboardData
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-100 via-blue-50 to-blue-100 p-4 sm:p-6 md:p-8">
@@ -891,7 +955,7 @@ export default function DashboardPage() {
 
                       <div className="space-y-4">
                         <div>
-                          <Label htmlFor="problemStatement" className="text-green-700">
+                          <Label>
                             Problem Statement
                           </Label>
                           <Textarea
@@ -907,7 +971,7 @@ export default function DashboardPage() {
                         </div>
 
                         <div>
-                          <Label htmlFor="targetAudience" className="text-green-700">
+                          <Label>
                             Target Audience
                           </Label>
                           <Textarea
@@ -923,7 +987,7 @@ export default function DashboardPage() {
                         </div>
 
                         <div>
-                          <Label htmlFor="revenueModel" className="text-green-700">
+                          <Label>
                             Revenue Model
                           </Label>
                           <Textarea
@@ -939,7 +1003,7 @@ export default function DashboardPage() {
                         </div>
 
                         <div>
-                          <Label htmlFor="uniqueValueProposition" className="text-green-700">
+                          <Label>
                             Unique Value Proposition
                           </Label>
                           <Textarea
@@ -1211,40 +1275,124 @@ export default function DashboardPage() {
         )}
         {/* Stage 4: Program Allotment */}
         {activeStage === 4 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            <Card className="bg-white/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
-              <CardHeader className="border-b border-gray-100">
-                <CardTitle className="text-2xl bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
-                  Stage {activeStage}: Program Allotment
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <DetailItem
-                    icon={<CheckCircle />}
-                    title="Acceptance Confirmation"
-                    value={programAllotment?.acceptanceConfirmation ? "Confirmed" : "Not confirmed"}
-                  />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <Card className="bg-white/80 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="text-2xl text-blue-600">
+              Stage 4: Program Allotment
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {dashboardData?.programAllotment ? (
+              dashboardData.programAllotment?.acceptanceConfirmation ? (
+                // Show confirmed program details
+                <div className="space-y-4">
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <h3 className="font-semibold text-green-800">Program Accepted</h3>
+                    <p className="text-green-700">You have accepted the {dashboardData.programAllocated} program.</p>
+                  </div>
                   <DetailItem
                     icon={<Calendar />}
-                    title="Preferred Start Date"
-                    value={programAllotment?.startDate || "Not specified"}
+                    title="Start Date"
+                    value={dashboardData.programAllotment.startDate}
                   />
                   <DetailItem
-                    icon={<Zap />}
-                    title="Additional Resource Requirements"
-                    value={programAllotment?.resourceRequirements || "Not specified"}
-                    className="col-span-full"
+                    icon={<ListChecks />}
+                    title="Resource Requirements"
+                    value={dashboardData.programAllotment.resourceRequirements}
                   />
                 </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
+              ) : (
+                // Show program acceptance form
+                <form onSubmit={handleProgramAllotmentSubmit} className="space-y-6">
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                    <h3 className="font-semibold text-blue-800">
+                      Program Allocated: {dashboardData.programAllocated}
+                    </h3>
+                    <p className="text-blue-600 text-sm mt-1">
+                      Please review and confirm your acceptance by completing the form below.
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <Label>Preferred Start Date</Label>
+                      <Input
+                        type="date"
+                        id="startDate"
+                        value={programAllotmentForm.startDate}
+                        onChange={(e) =>
+                          setProgramAllotmentForm((prev) => ({
+                            ...prev,
+                            startDate: e.target.value,
+                          }))
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label>
+                        Additional Resource Requirements
+                      </Label>
+                      <Textarea
+                        id="resourceRequirements"
+                        value={programAllotmentForm.resourceRequirements}
+                        onChange={(e) =>
+                          setProgramAllotmentForm((prev) => ({
+                            ...prev,
+                            resourceRequirements: e.target.value,
+                          }))
+                        }
+                        placeholder="Specify any additional resources you need..."
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={isSubmitting}
+                  >
+                    Review & Confirm Program Acceptance
+                  </Button>
+                </form>
+              )
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-gray-600">
+                  No program has been allocated yet. Please wait for the allocation.
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Confirm Program Acceptance</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to accept the {dashboardData?.programAllocated} program? 
+                This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => handleConfirmSubmission(false)}>
+                Decline Program
+              </AlertDialogCancel>
+              <AlertDialogAction onClick={() => handleConfirmSubmission(true)}>
+                Accept Program
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </motion.div>
+    )}
         {/* Next Stage Button - only show if on current stage and not already applied */}
         {activeStage === dashboardData.currentStage &&
           !status?.includes(`Applied for Stage ${currentStage + 1}`) &&

@@ -11,20 +11,25 @@ export async function POST(request: Request) {
 
     // Define the stage and status based on the action
     let newStage: string;
-    let newStatus: string;
+    let program: string;
+   
+    
 
     switch (action) {
       case 'incubation':
-        newStage = 'Incubation';
-        newStatus = 'In Incubation';
+        program = 'Incubation';
+        newStage = '4';
+        
         break;
       case 'pre-incubation':
-        newStage = 'Pre-Incubation';
-        newStatus = 'In Pre-Incubation';
+        program = 'Pre-Incubation';
+        newStage = '4';
+      
         break;
       case 'decline':
         newStage = 'Declined';
-        newStatus = 'Declined';
+        program = '';
+       
         break;
       default:
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
@@ -34,9 +39,9 @@ export async function POST(request: Request) {
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: {
-        stage: newStage,
-        status: newStatus,
-        requestStatus: action === 'decline' ? 'declined' : 'approved'
+      stage: newStage,
+        programAllocated: program,
+      requestStatus: action === 'decline' ? 'declined' : 'approved'
       }
     });
 
