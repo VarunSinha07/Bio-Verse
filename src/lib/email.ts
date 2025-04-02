@@ -1,29 +1,48 @@
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",  // Changed to use Gmail service directly
+  service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS, // Changed to use App Password
+    pass: process.env.EMAIL_PASS,
   },
 });
 
-// Add email verification function
-export const sendVerificationEmail = async (to: string, token: string, callbackUrl: string) => {
-  const verificationLink = `${process.env.BETTER_AUTH_URL}/verify?token=${token}&callback=${encodeURIComponent(callbackUrl)}`;
-  
+export const sendVerificationEmailWithCode = async (to: string, code: string) => {
   try {
+    console.log(`Sending verification email to ${to} with code ${code}`);
+    
     const info = await transporter.sendMail({
       from: `"Bio-Verse" <${process.env.EMAIL_USER}>`,
       to,
-      subject: "Verify your email address",
+      subject: "Your Email Verification OTP",
       html: `
-        <h2>Email Verification</h2>
-        <p>Please click the link below to verify your email address:</p>
-        <a href="${verificationLink}">Verify Email</a>
-        <p>If you didn't request this verification, please ignore this email.</p>
+        <div style="padding: 20px; font-family: Arial, sans-serif;">
+          <h2 style="color: #2563eb;">Welcome to Bio-Verse!</h2>
+          <p>Please use the following OTP code to verify your email address:</p>
+          <div style="
+            background-color: #f3f4f6;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 5px;
+            margin: 20px 0;
+            border-radius: 4px;
+          ">
+            ${code}
+          </div>
+          <p>Enter this OTP code on the verification page to complete your registration.</p>
+          <p style="color: #666; font-size: 14px;">
+            If you didn't create an account with Bio-Verse, please ignore this email.
+          </p>
+          <p style="color: #666; font-size: 14px;">
+            This OTP code will expire in 15 minutes.
+          </p>
+        </div>
       `,
     });
+    
     console.log("Verification email sent:", info.messageId);
     return info;
   } catch (error) {
@@ -31,24 +50,3 @@ export const sendVerificationEmail = async (to: string, token: string, callbackU
     throw error;
   }
 };
-
-// Function to send an email
-export const sendEmail = async (to: string, subject: string, text: string) => {
-    try {
-        const info = await transporter.sendMail({
-            from: '"Varun Sinha" <varunsinha2604@gmail.com>', // Sender's email
-            to, // Recipient's email
-            subject, // Email subject
-            text, // Plain text body
-            html: `<p>${text}</p>` // HTML body (optional)
-        });
-
-        console.log("Email sent: ", info.messageId);
-        return info;
-    } catch (error) {
-        console.error("Error sending email: ", error);
-        throw error;
-    }
-};
-
-

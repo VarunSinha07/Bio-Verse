@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import type { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -15,6 +16,7 @@ import { toast } from "@/hooks/use-toast"
 import { Loader2 } from "lucide-react"
 
 const SignUp = () => {
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const form = useForm<z.infer<typeof signUpFormSchema>>({
     resolver: zodResolver(signUpFormSchema),
@@ -28,44 +30,56 @@ const SignUp = () => {
   async function onSubmit(values: z.infer<typeof signUpFormSchema>) {
     setIsLoading(true)
     const { name, email, password } = values
-    const { data, error } = await authClient.signUp.email(
-      {
-        email,
-        password,
-        name,
-        callbackURL: "/sign-in",
-      },
-      {
-        onRequest: () => {
-          toast({
-            title: "Please Wait...",
-          })
+    try {
+      const { error } = await authClient.signUp.email(
+        {
+          email,
+          password,
+          name,
+          callbackURL: "/verify-otp",
         },
-        onSuccess: () => {
-          form.reset()
-          toast({
-            title: "Success",
-            description: "Your account has been created. Please sign in.",
-          })
-        },
-        onError: (ctx) => {
-          toast({
-            title: "Error",
-            description: ctx.error.message,
-            variant: "destructive",
-          })
-        },
-      },
-    )
-    console.log(data)
-    if (error) {
+        {
+          onRequest: () => {
+            toast({
+              title: "Creating account...",
+            })
+          },
+          onSuccess: () => {
+            form.reset()
+            toast({
+              title: "OTP Sent",
+              description: "Please check your email for the verification code."
+            })
+            // Redirect to OTP verification page with email
+            router.push(`/verify-otp?email=${encodeURIComponent(email)}`)
+          },
+          onError: (ctx) => {
+            toast({
+              title: "Error",
+              description: ctx.error.message,
+              variant: "destructive",
+            })
+          },
+        }
+      )
+      
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        })
+      }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred"
       toast({
         title: "Error",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive",
       })
+    } finally {
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }
 
   return (
@@ -135,7 +149,7 @@ const SignUp = () => {
                 type="submit"
                 disabled={isLoading}
               >
-                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Submit"}
+                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Sign Up"}
               </Button>
             </form>
           </Form>
@@ -154,4 +168,3 @@ const SignUp = () => {
 }
 
 export default SignUp
-
