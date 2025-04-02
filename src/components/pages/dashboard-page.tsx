@@ -345,6 +345,34 @@ export default function DashboardPage() {
                   console.error("Error fetching meeting info:", meetingError)
                 }
               }
+              if (stage === 4) {
+                try {
+                  const programResponse = await fetch("/api/fetch-program-allocation")
+                  if (programResponse.ok) {
+                    const programData = await programResponse.json()
+                    setDashboardData(prev => {
+                      if (!prev) return null
+                      return {
+                        ...prev,
+                        programAllocated: programData.programAllocated,
+                        programAllotment: programData.programAllotment,
+                      }
+                    })
+      
+                    // Update the form with existing data if available
+                    if (programData.programAllotment) {
+                      setProgramAllotmentForm(prev => ({
+                        ...prev,
+                        startDate: programData.programAllotment.startDate || "",
+                        resourceRequirements: programData.programAllotment.resourceRequirements || "",
+                        acceptanceConfirmation: programData.programAllotment.acceptanceConfirmation || false,
+                      }))
+                    }
+                  }
+                } catch (error) {
+                  console.error("Error fetching program allocation:", error)
+                }
+              }
             } else {
               throw new Error("Failed to fetch user data")
             }
@@ -673,7 +701,7 @@ export default function DashboardPage() {
     setShowConfirmDialog(false)
 
     try {
-      const response = await fetch("/api/fetch-program-allotment", {
+      const response = await fetch("/api/program-allotment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1287,7 +1315,7 @@ export default function DashboardPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {dashboardData?.programAllotment ? (
+            {dashboardData?.programAllocated ? (
               dashboardData.programAllotment?.acceptanceConfirmation ? (
                 // Show confirmed program details
                 <div className="space-y-4">

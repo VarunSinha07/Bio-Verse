@@ -77,7 +77,7 @@ export async function POST(request: Request) {
         await writeFile(filePath, fileBuffer);
         
         // Save the relative URL
-        ndaDocumentUrl = `/uploads/${fileName}`;
+        ndaDocumentUrl = fileName;
         
         try {
           // Check if document record exists for this user

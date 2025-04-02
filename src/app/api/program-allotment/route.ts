@@ -47,7 +47,7 @@ export async function POST(req: Request) {
           id: session.user.id,
         },
         data: {
-          stage: "programAllocated",
+          stage: user?.programAllocated,
           status: `In ${user?.programAllocated}`,
         },
       })
