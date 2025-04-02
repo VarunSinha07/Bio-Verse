@@ -11,10 +11,14 @@ import { Input } from "@/components/ui/input"
 import { signInFormSchema } from "@/lib/auth-schema"
 import { authClient } from "@/lib/auth-client"
 import { toast } from "@/hooks/use-toast"
-import { Loader2 } from "lucide-react"
+import { Loader2, AlertCircle, Mail } from "lucide-react"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false)
+  const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null)
+  const [isResendingVerification, setIsResendingVerification] = useState(false)
+  
   const form = useForm<z.infer<typeof signInFormSchema>>({
     resolver: zodResolver(signInFormSchema),
     defaultValues: {
@@ -23,50 +27,101 @@ const SignIn = () => {
     },
   })
 
+  async function resendVerificationEmail() {
+    if (!unverifiedEmail) return
+    
+    setIsResendingVerification(true)
+    try {
+      await authClient.sendVerificationEmail({
+        email: unverifiedEmail,
+        callbackURL: "/dashboard",
+      })
+      
+      toast({
+        title: "Verification Email Sent",
+        description: "Please check your inbox and follow the link to verify your account.",
+        duration: 5000,
+      })
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "We couldn't send a verification email. Please try again later."
+      toast({
+        title: "Failed to Resend Email",
+        description: errorMessage,
+        variant: "destructive",
+        duration: 5000,
+      })
+    } finally {
+      setIsResendingVerification(false)
+    }
+  }
+
   async function onSubmit(values: z.infer<typeof signInFormSchema>) {
     setIsLoading(true)
+    setUnverifiedEmail(null)
+    
     const { email, password } = values
-    const { data, error } = await authClient.signIn.email(
-      {
-        email,
-        password,
-        callbackURL: "/form",
-      },
-      {
-        onRequest: () => {
-          toast({
-            title: "Please Wait...",
-          })
+    
+    toast({
+      title: "Signing In...",
+      description: "Please wait while we verify your credentials.",
+    })
+    
+    try {
+      const { error } = await authClient.signIn.email(
+        {
+          email,
+          password,
+          callbackURL: "/form",
         },
-        onSuccess: () => {
-          window.location.href = "/dashboard-page"
-        },
-        onError: async (ctx) => {
-          if (ctx.error.status === 403) {
-            await authClient.sendVerificationEmail({
-              email,
-              callbackURL: "/dashboard",
-            })
+        {
+          onSuccess: () => {
             toast({
-              title: "Please verify your email",
-              description: "Email verification has been sent, kindly verify",
+              title: "Success!",
+              description: "You have been signed in successfully.",
+              duration: 3000,
             })
-          }
-          toast({
-            title: "Error",
-            description: ctx.error.message,
-          })
+            window.location.href = "/dashboard-page"
+          },
+          onError: async (ctx) => {
+            if (ctx.error.status === 403) {
+              setUnverifiedEmail(email)
+              toast({
+                title: "Email Not Verified",
+                description: "Your account exists but email verification is required.",
+                variant: "destructive",
+                duration: 5000,
+              })
+            } else {
+              toast({
+                title: "Sign In Failed",
+                description: ctx.error.message || "Invalid email or password.",
+                variant: "destructive",
+                duration: 5000,
+              })
+            }
+          },
         },
-      },
-    )
-    console.log(data)
-    if (error) {
+      )
+      
+      if (error && error.status !== 403) {
+        toast({
+          title: "Authentication Error",
+          description: error.message,
+          variant: "destructive",
+          duration: 5000,
+        })
+      }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred"
       toast({
-        title: "Error",
-        description: error.message,
+        title: "System Error",
+        description: errorMessage,
+        variant: "destructive",
+        duration: 5000,
       })
+    } finally {
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }
 
   return (
@@ -77,6 +132,30 @@ const SignIn = () => {
           <CardDescription className="text-green-600">Welcome Back! Please Sign In to continue</CardDescription>
         </CardHeader>
         <CardContent>
+          {unverifiedEmail && (
+            <Alert className="mb-6 bg-yellow-50 border-yellow-200">
+              <AlertCircle className="h-4 w-4 text-yellow-600" />
+              <AlertTitle className="text-yellow-700">Email Not Verified</AlertTitle>
+              <AlertDescription className="text-yellow-600">
+                Your account exists but you need to verify your email before signing in.
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-2 border-yellow-300 text-yellow-700 hover:bg-yellow-100 flex items-center"
+                  onClick={resendVerificationEmail}
+                  disabled={isResendingVerification}
+                >
+                  {isResendingVerification ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Mail className="mr-2 h-4 w-4" />
+                  )}
+                  Resend Verification Email
+                </Button>
+              </AlertDescription>
+            </Alert>
+          )}
+          
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
@@ -87,7 +166,7 @@ const SignIn = () => {
                     <FormLabel className="text-green-700">Email</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="test@test.com"
+                        placeholder="you@example.com"
                         {...field}
                         className="border-green-200 focus:border-green-500 transition-all duration-300 hover:border-green-300"
                       />
@@ -125,7 +204,7 @@ const SignIn = () => {
                 type="submit"
                 disabled={isLoading}
               >
-                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Submit"}
+                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Sign In"}
               </Button>
             </form>
           </Form>
@@ -144,4 +223,3 @@ const SignIn = () => {
 }
 
 export default SignIn
-

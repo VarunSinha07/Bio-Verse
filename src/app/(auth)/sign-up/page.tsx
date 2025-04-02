@@ -31,6 +31,12 @@ const SignUp = () => {
     setIsLoading(true)
     const { name, email, password } = values
     try {
+      toast({
+        title: "Creating account...",
+        description: "Please wait while we set up your account.",
+      })
+
+      // Initialize user but don't complete signup until verification
       const { error } = await authClient.signUp.email(
         {
           email,
@@ -39,25 +45,22 @@ const SignUp = () => {
           callbackURL: "/verify-otp",
         },
         {
-          onRequest: () => {
-            toast({
-              title: "Creating account...",
-            })
-          },
           onSuccess: () => {
             form.reset()
             toast({
-              title: "OTP Sent",
-              description: "Please check your email for the verification code."
+              title: "Verification Required",
+              description: "A verification code has been sent to your email. Please verify to complete your registration.",
+              duration: 5000,
             })
             // Redirect to OTP verification page with email
             router.push(`/verify-otp?email=${encodeURIComponent(email)}`)
           },
           onError: (ctx) => {
             toast({
-              title: "Error",
-              description: ctx.error.message,
+              title: "Sign Up Failed",
+              description: ctx.error.message || "There was a problem creating your account.",
               variant: "destructive",
+              duration: 5000,
             })
           },
         }
@@ -68,14 +71,16 @@ const SignUp = () => {
           title: "Error",
           description: error.message,
           variant: "destructive",
+          duration: 5000,
         })
       }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred"
       toast({
-        title: "Error",
+        title: "System Error",
         description: errorMessage,
         variant: "destructive",
+        duration: 5000,
       })
     } finally {
       setIsLoading(false)
@@ -87,7 +92,7 @@ const SignUp = () => {
       <Card className="w-full max-w-md mx-auto bg-white/80 backdrop-blur-sm shadow-xl transition-all duration-300 hover:shadow-2xl">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold text-green-700">Sign Up</CardTitle>
-          <CardDescription className="text-green-600">Welcome! Please Sign Up to continue</CardDescription>
+          <CardDescription className="text-green-600">Create an account to get started</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -117,7 +122,7 @@ const SignUp = () => {
                     <FormLabel className="text-green-700">Email</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="test@test.com"
+                        placeholder="you@example.com"
                         {...field}
                         className="border-green-200 focus:border-green-500 transition-all duration-300 hover:border-green-300"
                       />
@@ -135,7 +140,7 @@ const SignUp = () => {
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="Enter your password"
+                        placeholder="Create a strong password"
                         {...field}
                         className="border-green-200 focus:border-green-500 transition-all duration-300 hover:border-green-300"
                       />
