@@ -2,6 +2,7 @@
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import type { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -15,6 +16,7 @@ import { Loader2, AlertCircle, Mail } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 const SignIn = () => {
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null)
   const [isResendingVerification, setIsResendingVerification] = useState(false)
@@ -39,9 +41,12 @@ const SignIn = () => {
       
       toast({
         title: "Verification Email Sent",
-        description: "Please check your inbox and follow the link to verify your account.",
+        description: "Please check your inbox for the OTP verification code.",
         duration: 5000,
       })
+      
+      // Redirect to OTP verification page with email as query parameter
+      router.push(`/verify-otp?email=${encodeURIComponent(unverifiedEmail)}`)
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "We couldn't send a verification email. Please try again later."
       toast({
