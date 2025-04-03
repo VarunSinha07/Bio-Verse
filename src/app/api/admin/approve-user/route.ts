@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma';
 import { writeFile } from 'fs/promises';
 import { mkdir } from 'fs/promises';
 import { join } from 'path';
+import { sendApprovalEmail } from '@/lib/email';
 
 export async function POST(request: Request) {
   try {
@@ -36,7 +37,7 @@ export async function POST(request: Request) {
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { stage: true, status: true }
+      select: { stage: true, status: true, email: true }
     });
 
     if (!user) {
@@ -135,6 +136,20 @@ export async function POST(request: Request) {
         updatedAt: new Date()
       },
     });
+
+    if (action === 'approve') {
+      try {
+        const stageName = currentStage;
+        const ndaPath = ndaDocumentUrl 
+          ? join(process.cwd(), 'public', 'uploads', ndaDocumentUrl)
+          : undefined;
+        
+        await sendApprovalEmail(user.email, stageName, ndaPath);
+      } catch (emailError) {
+        console.error('Error sending approval email:', emailError);
+        // Continue even if email fails
+      }
+    }
 
     return NextResponse.json({
       message: `User request ${action === 'approve' ? 'approved' : 'declined'} successfully`,
