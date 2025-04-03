@@ -66,7 +66,6 @@ export async function createVerificationCode(email: string) {
       },
     });
     
-    console.log(`Created verification code for ${email}: ${verificationCode}`);
     return verificationCode;
   } catch (error) {
     console.error("Error creating verification code:", error);

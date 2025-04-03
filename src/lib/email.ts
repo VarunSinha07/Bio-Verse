@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
 
 export const sendVerificationEmailWithCode = async (to: string, code: string) => {
   try {
-    console.log(`Sending verification email to ${to} with code ${code}`);
+  
     
     const info = await transporter.sendMail({
       from: `"Bio-Verse" <${process.env.EMAIL_USER}>`,

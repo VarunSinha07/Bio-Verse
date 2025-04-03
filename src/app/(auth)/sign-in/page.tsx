@@ -34,7 +34,7 @@ const SignIn = () => {
     try {
       await authClient.sendVerificationEmail({
         email: unverifiedEmail,
-        callbackURL: "/dashboard",
+        callbackURL: "/form",
       })
       
       toast({

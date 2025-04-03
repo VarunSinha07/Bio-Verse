@@ -166,7 +166,7 @@ const VerifyOTP = () => {
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold text-green-700">Verify Email</CardTitle>
           <CardDescription className="text-green-600">
-            Enter the 6-digit code sent to your email
+          We&apos;ve sent a 6 digit verification code to <span className="font-medium">{email}</span>. Please check your inbox and spam folder.
           </CardDescription>
         </CardHeader>
         <CardContent>
