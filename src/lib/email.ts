@@ -326,3 +326,71 @@ export const sendMeetingScheduledEmail = async ({
     throw error;
   }
 };
+
+export const sendProgramAllocationEmail = async ({
+  to,
+  userName,
+  programName,
+  stage
+}: {
+  to: string;
+  userName: string;
+  programName: string;
+  stage: string;
+}) => {
+  try {
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: `"Bio-Verse" <${process.env.EMAIL_USER}>`,
+      to,
+      subject: `Program Allocation Notification - ${programName}`,
+      html: `
+        <div style="max-width: 600px; margin: 0 auto; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #333; line-height: 1.6;">
+          <div style="background: linear-gradient(135deg, #2563eb, #1e40af); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+            <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 600;">
+              Program Allocation Notification
+            </h1>
+          </div>
+          
+          <div style="padding: 30px; background: white; border-radius: 0 0 8px 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
+            <p style="font-size: 16px; margin-bottom: 20px;">
+              Hello ${userName},
+            </p>
+            
+            <p style="font-size: 16px; margin-bottom: 20px;">
+              We are pleased to inform you that you have been allocated to the <strong>${programName}</strong> program at Stage ${stage}.
+            </p>
+            
+            <div style="background: #f8fafc; border-left: 4px solid #2563eb; padding: 15px; margin: 20px 0; border-radius: 4px;">
+              <h3 style="margin-top: 0; color: #1e293b; font-size: 18px;">
+                Program Details
+              </h3>
+              <div style="margin-bottom: 10px;">
+                <strong>Program:</strong> ${programName}
+              </div>
+              <div style="margin-bottom: 10px;">
+                <strong>Stage:</strong> ${stage}
+              </div>
+            </div>
+            
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; color: #64748b; font-size: 14px;">
+              <p style="margin: 5px 0;">
+                If you have any questions, please don't hesitate to contact our support team.
+              </p>
+              <p style="margin: 5px 0;">
+                Best regards,<br>
+                The Bio-Verse Team
+              </p>
+            </div>
+          </div>
+        </div>
+      `,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Program allocation email sent:", info.messageId);
+    return info;
+  } catch (error) {
+    console.error("Error sending program allocation email:", error);
+    throw error;
+  }
+};
