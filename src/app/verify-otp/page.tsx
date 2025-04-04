@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import type { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -14,8 +14,9 @@ import { verifyOtpSchema } from "@/lib/auth-schema"
 import { toast } from "@/hooks/use-toast"
 import { Loader2, Mail } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { useSearchParams } from 'next/navigation'
 
-const VerifyOTP = () => {
+function VerifyOTPContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const email = searchParams?.get("email") || ""
@@ -260,4 +261,10 @@ const VerifyOTP = () => {
   )
 }
 
-export default VerifyOTP
+export default function VerifyOTP() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyOTPContent />
+    </Suspense>
+  )
+}

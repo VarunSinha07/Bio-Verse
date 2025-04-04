@@ -394,3 +394,47 @@ export const sendProgramAllocationEmail = async ({
     throw error;
   }
 };
+
+export const sendPasswordResetOTP = async (to: string, code: string) => {
+  try {
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: `"Bio-Verse" <${process.env.EMAIL_USER}>`,
+      to,
+      subject: "Password Reset Verification Code",
+      html: `
+        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; padding: 20px;">
+          <h2 style="color: #2563eb;">Password Reset Request</h2>
+          <p>We received a request to reset your password. Please use the following verification code:</p>
+          
+          <div style="
+            background-color: #f3f4f6;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 5px;
+            margin: 20px 0;
+            border-radius: 4px;
+          ">
+            ${code}
+          </div>
+          
+          <p>Enter this code on the verification page to reset your password.</p>
+          <p style="color: #666; font-size: 14px;">
+            If you didn't request a password reset, please ignore this email.
+          </p>
+          <p style="color: #666; font-size: 14px;">
+            This code will expire in 15 minutes.
+          </p>
+        </div>
+      `,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Password reset OTP email sent:", info.messageId);
+    return info;
+  } catch (error) {
+    console.error("Error sending password reset OTP email:", error);
+    throw error;
+  }
+};

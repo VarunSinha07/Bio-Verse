@@ -1,5 +1,5 @@
 import { betterAuth } from 'better-auth';
-import { sendVerificationEmailWithCode } from './email';
+import { sendVerificationEmailWithCode, sendPasswordResetOTP } from './email';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { PrismaClient } from '@prisma/client';
 import { randomUUID } from 'crypto';
@@ -65,6 +65,9 @@ export async function createVerificationCode(email: string) {
         updatedAt: new Date(),
       },
     });
+
+     // Send the OTP email
+    await sendPasswordResetOTP(email, verificationCode);
     
     return verificationCode;
   } catch (error) {
