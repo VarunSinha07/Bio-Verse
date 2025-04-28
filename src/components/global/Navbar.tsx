@@ -65,8 +65,8 @@ const Navbar = () => {
             src="/logo.png"
             alt="Bioverse Logo"
             width={160}
-            height={50}
-            className="cursor-pointer hover:opacity-90 transition-opacity"
+            height={100}
+            className="cursor-pointer hover:opacity-90 transition-opacity bg-transparent"
           />
         </Link>
 
