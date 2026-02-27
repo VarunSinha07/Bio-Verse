@@ -1,189 +1,117 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useInView, AnimatePresence } from 'framer-motion';
-import { Cormorant_Garamond, Waterfall } from 'next/font/google';
-import { Icon } from '@iconify/react';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
-
-const cormorantGaramond = Cormorant_Garamond({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-});
-
-const waterfall = Waterfall({
-  subsets: ['latin'],
-  weight: ['400'],
-});
+import {
+  FlaskConical,
+  Brain,
+  Activity,
+  Pill,
+  BarChart2,
+  CheckCircle2,
+} from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 
 const features = [
   {
-    title: 'Integrated Laboratory Management & Analytics',
+    title: 'Integrated Laboratory Management',
     description:
-      'Centralized sample tracking and secure data storage with LIMS. Automated data integration from diverse laboratory workflows for seamless analytics.',
-    icon: 'mdi:flask-outline',
+      'Centralized sample tracking and secure data storage with LIMS. Automated data integration from diverse laboratory workflows enabling seamless analytics and compliance.',
+    icon: <FlaskConical className="h-6 w-6 text-cyan-500" />,
     image: '/img1.jpg',
   },
   {
     title: 'AI-Powered Simulations',
     description:
-      'Virus Modeling predicts evolution, spread patterns, and potential impact zones of pathogens. Pathogen Behavior Analysis simulates interactions between pathogens and their environments.',
-    icon: 'mdi:brain',
+      'Predict evolution, spread patterns, and potential impact zones of pathogens with Virus Modeling. Analyze interactions between pathogens and their environments in real-time.',
+    icon: <Brain className="h-6 w-6 text-purple-500" />,
     image: '/img1.jpg',
   },
   {
     title: 'Real-Time Outbreak Predictions',
     description:
-      'Combines LIMS-stored data with geographic and demographic datasets. Provides actionable insights into high-risk regions, enabling proactive public health measures.',
-    icon: 'mdi:chart-bell-curve-cumulative',
+      'Combine LIMS-stored data with geographic and demographic datasets to provide actionable insights into high-risk regions, enabling proactive public health measures.',
+    icon: <Activity className="h-6 w-6 text-red-500" />,
     image: '/img1.jpg',
   },
   {
-    title: 'Drug Discovery Simulations',
+    title: 'Drug Discovery Acceleration',
     description:
-      'Utilizes genetic, biomarker, and pathogen data from LIMS for targeted simulations. AI algorithms predict drug efficacy and resistance mechanisms, accelerating therapeutic development.',
-    icon: 'mdi:pill',
+      'Utilize genetic, biomarker, and pathogen data for targeted simulations. AI algorithms predict drug efficacy and resistance mechanisms, drastically reducing development timelines.',
+    icon: <Pill className="h-6 w-6 text-emerald-500" />,
     image: '/img1.jpg',
   },
   {
-    title: 'Predictive Analytics for Public Health',
+    title: 'Public Health Analytics',
     description:
-      'Identifies trends and correlations in infection rates, resistance patterns, and treatment outcomes. Suggests resource allocation strategies for effective epidemic management.',
-    icon: 'mdi:chart-scatter-plot',
+      'Identify trends and correlations in infection rates and treatment outcomes. Data-driven suggestions for resource allocation strategies ensures effective epidemic management.',
+    icon: <BarChart2 className="h-6 w-6 text-amber-500" />,
     image: '/img1.jpg',
   },
 ];
-
-const heroImages = [
-  '/excellence1.jpg',
-  '/excellence2.jpg',
-  '/excellence1.jpg',
-  '/excellence2.jpg',
-  '/excellence1.jpg',
-];
-
-const FeatureItem = ({ feature }: { feature: (typeof features)[0] }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { margin: '-40% 0px -40% 0px' });
-
-  return (
-    <div
-      ref={ref}
-      className="min-h-screen flex items-center justify-center mb-[30vh]"
-    >
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-        transition={{ duration: 0.5 }}
-        className={`${cormorantGaramond.className} flex flex-col md:flex-row items-center gap-12 group`}
-      >
-        <motion.div
-          className="w-full md:w-1/2 aspect-square relative overflow-hidden rounded-full order-1 md:order-2"
-          initial={{ opacity: 0, scale: 0.9, y: 50 }}
-          animate={
-            isInView
-              ? { opacity: 1, scale: 1, y: 0 }
-              : { opacity: 0, scale: 0.9, y: 50 }
-          }
-          transition={{ duration: 0.3 }}
-        >
-          <Image
-            src={feature.image || '/excellence1.jpg'}
-            alt={feature.title}
-            layout="fill"
-            objectFit="cover"
-            className="transition-all duration-300 filter grayscale group-hover:grayscale-0"
-          />
-        </motion.div>
-        <div className="w-full md:w-1/2 space-y-6 order-2 md:order-1">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="flex items-center gap-6"
-          >
-            <motion.div
-              className="flex-shrink-0 w-16 h-16 rounded-full bg-gradient-to-br from-teal-400 to-blue-500 flex items-center justify-center text-white text-3xl overflow-hidden group-hover:scale-110 transition-transform duration-300"
-              whileHover={{ rotate: 360 }}
-              transition={{ duration: 0.8, ease: 'easeInOut' }}
-            >
-              <Icon icon={feature.icon} />
-            </motion.div>
-            <h3 className="text-4xl font-semibold text-teal-700 group-hover:text-blue-600 transition-colors duration-300">
-              {feature.title}
-            </h3>
-          </motion.div>
-          <motion.p
-            className="text-2xl text-gray-600 group-hover:text-gray-800 transition-colors duration-300"
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.5, delay: 0.8 }}
-          >
-            {feature.description}
-          </motion.p>
-        </div>
-      </motion.div>
-    </div>
-  );
-};
 
 export default function EnablingExcellence() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start'],
-  });
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="relative h-screen overflow-hidden">
-        <AnimatePresence initial={false}>
-          <motion.div
-            key={currentImageIndex}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1, ease: 'easeInOut' }}
-            className="absolute inset-0"
-          >
-            <Image
-              src={heroImages[currentImageIndex] || '/placeholder.svg'}
-              alt={`Hero image ${currentImageIndex + 1}`}
-              layout="fill"
-              objectFit="cover"
-              priority
-            />
-          </motion.div>
-        </AnimatePresence>
-        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <motion.h1
-            className={`${waterfall.className} text-6xl md:text-8xl lg:text-9xl text-center text-white`}
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            Enabling Excellence
-          </motion.h1>
-        </div>
+    <div className="bg-background min-h-screen py-24">
+      <div className="container px-4 md:px-6 mb-16 text-center">
+        <motion.h1
+          className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-indigo-600"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          Enabling Excellence
+        </motion.h1>
+        <motion.p
+          className="text-xl text-muted-foreground max-w-2xl mx-auto"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          Empowering researchers with cutting-edge tools to solve the most
+          complex biological challenges.
+        </motion.p>
       </div>
 
-      <div
-        ref={containerRef}
-        className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8 relative pb-[20vh]"
-      >
-        {features.map((feature) => (
-          <FeatureItem key={feature.title} feature={feature} />
-        ))}
+      <div className="container px-4 md:px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {features.map((feature, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+            >
+              <Card className="h-full border-border/50 hover:border-teal-500/50 transition-colors duration-300 overflow-hidden group">
+                <div className="relative h-48 w-full overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent z-10 opacity-60" />
+                  <Image
+                    src={feature.image}
+                    alt={feature.title}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute top-4 right-4 z-20 bg-background/80 backdrop-blur-md p-2 rounded-full border border-border shadow-sm">
+                    {feature.icon}
+                  </div>
+                </div>
+                <CardContent className="pt-6">
+                  <h3 className="text-xl font-bold mb-3 group-hover:text-teal-600 transition-colors">
+                    {feature.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+                    {feature.description}
+                  </p>
+                  <div className="flex items-center text-xs font-medium text-teal-600 opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300">
+                    <CheckCircle2 className="h-3 w-3 mr-1" />
+                    Industry Standard
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -34,7 +34,8 @@ const Page = () => {
 
   async function onSubmit(values: z.infer<typeof forgotPasswordFormSchema>) {
     const { email } = values;
-    const { data, error } = await authClient.forgetPassword(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (authClient as any).forgetPassword(
       {
         email,
         redirectTo: '/reset-password',
@@ -52,7 +53,8 @@ const Page = () => {
             description: 'Password reset link sent to your email',
           });
         },
-        onError: async (ctx) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onError: async (ctx: any) => {
           toast({
             title: 'Error',
             description: ctx.error.message,

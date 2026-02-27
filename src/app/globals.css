@@ -67,11 +67,13 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
   }
 }
 :root {
-  --sea-green: #6faeb8;
+  --sea-green: #2dd4bf; 
+  --deep-teal: #0f766e;
+  --bio-black: #0f172a;
 }
 
 @layer utilities {
@@ -80,6 +82,9 @@ body {
   }
   .text-sea-green {
     color: var(--sea-green);
+  }
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-600;
   }
 }
 

@@ -1,210 +1,216 @@
-"use client"
+'use client';
 
-import { Button } from "../ui/button"
-import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
-import { ModeToggle } from "../mode-toggle"
-import Image from "next/image"
-import { useState} from "react"
-import { IoMenu, IoClose } from "react-icons/io5"
-import { useSession, signOut} from "@/lib/auth-client"
+import * as React from 'react';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X } from 'lucide-react';
+import { useSession, signOut } from '@/lib/auth-client';
+
+import { cn } from '@/lib/utils';
+// Ensure these components exist or use standard HTML/Tailwind for now if they don't
+import { Button } from '@/components/ui/button';
+import { ModeToggle } from '@/components/mode-toggle';
 
 const Navbar = () => {
-  const pathname = usePathname()
-  const router = useRouter()
-  const [isOpen, setIsOpen] = useState(false)
-  const { data: session, isPending } = useSession()
-  const isSignedIn = !isPending && session !== null
+  const pathname = usePathname();
+  const router = useRouter();
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [scrolled, setScrolled] = React.useState(false);
 
-  // Navigation items based on authentication state
-  const unauthenticatedNavItems = [
-    "Ecosystem",
-    "Our Approach",
-    "Enabling Excellence",
-    "Workflow",
-    "Insights",
-    "Contact Us",
-  ]
+  // Session handling
+  const { data: session, isPending } = useSession();
+  const isSignedIn = !isPending && session !== null;
 
-  const authenticatedNavItems = [
-    { name: "Application", path: "/form" },
-    { name: "Resource Hub", path: "/resource-hub" },
-    { name: "Our Partnered Services", path: "/partnered-services" },
-    { name: "Profile", path: "/profile" },
-  ]
+  // Handle scroll effect
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-  const navItems = isSignedIn ? authenticatedNavItems : unauthenticatedNavItems
+  const navItems = isSignedIn
+    ? [
+        { name: 'Application', path: '/form' },
+        { name: 'Resource Hub', path: '/resource-hub' },
+        { name: 'Partnered Services', path: '/partnered-services' },
+        { name: 'Profile', path: '/profile' },
+      ]
+    : [
+        { name: 'Ecosystem', path: '/ecosystem' },
+        { name: 'Our Approach', path: '/our-approach' },
+        { name: 'Enabling Excellence', path: '/enabling-excellence' },
+        { name: 'Workflow', path: '/workflow' },
+      ];
 
   const handleSignOut = async () => {
     try {
       await signOut();
-      router.push('/sign-in'); 
+      router.push('/sign-in');
     } catch (error) {
       console.error('Error signing out:', error);
     }
   };
 
-  interface NavItem {
-    name: string;
-    path: string;
-  }
-
-  const handleNavItemClick = (item: NavItem | string): void => {
-    setIsOpen(false);
-    if (isSignedIn && typeof item === "object") {
-      router.push(item.path);
-    }
-  };
-
   return (
-    <nav className="sticky top-0 z-50 bg-gradient-to-r from-black via-gray-900 to-black border-b border-sea-green/30 backdrop-blur-sm">
-      <div className="container mx-auto flex justify-between items-center px-4 py-3">
-        {/* Logo */}
-        <Link href="/" className="relative z-10">
-          <Image
-            src="/logo.png"
-            alt="Bioverse Logo"
-            width={160}
-            height={100}
-            className="cursor-pointer hover:opacity-90 transition-opacity bg-transparent"
-          />
-        </Link>
+    <header
+      className={cn(
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out border-b border-transparent',
+        scrolled
+          ? 'bg-background/80 backdrop-blur-md border-border/40 shadow-sm'
+          : 'bg-transparent'
+      )}
+    >
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 md:h-20">
+          {/* Logo */}
+          <Link
+            href="/"
+            className="flex-shrink-0 flex items-center gap-2 group"
+            onClick={() => setIsOpen(false)}
+          >
+            <div className="relative w-8 h-8 md:w-10 md:h-10 transition-transform group-hover:scale-105">
+              {/* Fallback to text if logo image is missing or just use text for cleaner look */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-teal-500 to-emerald-600 rounded-lg transform rotate-3 opacity-90"></div>
+              <div className="absolute inset-0 bg-background rounded-lg flex items-center justify-center border border-border shadow-sm">
+                <span className="font-bold text-teal-600 text-xl">B</span>
+              </div>
+            </div>
+            <span className="font-bold text-xl md:text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-emerald-600">
+              BioVerse
+            </span>
+          </Link>
 
-        {/* Desktop Navigation */}
-        <ul className="hidden md:flex items-center space-x-6">
-          {navItems.map((item) => {
-            const itemName = typeof item === "object" ? item.name : item
-            const itemPath = typeof item === "object" ? item.path : `/${item.toLowerCase().replace(/ /g, "-")}`
-            const isActive = pathname === itemPath
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-1 lg:gap-2">
+            {navItems.map((item) => (
+              <Button
+                key={item.path}
+                variant="ghost"
+                asChild
+                className={cn(
+                  'text-sm font-medium transition-colors hover:text-primary hover:bg-accent/50',
+                  pathname === item.path
+                    ? 'text-primary font-semibold bg-accent/50'
+                    : 'text-muted-foreground'
+                )}
+              >
+                <Link href={item.path}>{item.name}</Link>
+              </Button>
+            ))}
+          </nav>
 
-            return (
-              <li key={itemName} className="relative group">
-                <Link
-                  href={itemPath}
-                  className={`px-3 py-2 text-sm font-medium transition-all duration-300 ${
-                    isActive ? "text-sea-green" : "text-gray-300 hover:text-white"
-                  }`}
-                  onClick={() => handleNavItemClick(item)}
-                >
-                  {itemName}
-                  <span
-                    className={`absolute bottom-0 left-0 w-full h-0.5 bg-sea-green transform origin-left transition-transform duration-300 ${
-                      isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
-                    }`}
-                  />
-                </Link>
-              </li>
-            )
-          })}
-        </ul>
-
-        {/* Right Section */}
-        <div className="flex items-center space-x-4">
-          <div className="hidden md:flex items-center space-x-3">
+          {/* Actions */}
+          <div className="hidden md:flex items-center gap-2 lg:gap-4">
+            <ModeToggle />
             {isSignedIn ? (
               <Button
-                variant="ghost"
-                size="sm"
-                className="bg-gray-800/50 text-white hover:bg-gray-700 hover:text-sea-green transition-all duration-300 rounded-lg px-4 py-2 backdrop-blur-sm"
                 onClick={handleSignOut}
+                variant="outline"
+                size="sm"
+                className="border-teal-200 hover:bg-teal-50 dark:border-teal-800 dark:hover:bg-teal-950/30"
               >
                 Sign Out
               </Button>
             ) : (
-              <>
-                <Link href="/sign-in">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="bg-gray-800/50 text-white hover:bg-gray-700 hover:text-sea-green transition-all duration-300 rounded-lg px-4 py-2 backdrop-blur-sm"
-                  >
-                    Sign In
-                  </Button>
-                </Link>
-                <Link href="/sign-up">
-                  <Button
-                    size="sm"
-                    className="bg-sea-green text-white hover:bg-sea-green/80 transition-all duration-300 rounded-lg px-4 py-2 shadow-lg shadow-sea-green/20"
-                  >
-                    Sign Up
-                  </Button>
-                </Link>
-              </>
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="sm" asChild>
+                  <Link href="/sign-in">Log in</Link>
+                </Button>
+                <Button
+                  size="sm"
+                  className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white shadow-md shadow-teal-500/20 transition-all hover:shadow-lg hover:shadow-teal-500/30"
+                  asChild
+                >
+                  <Link href="/sign-up">Get Started</Link>
+                </Button>
+              </div>
             )}
-            <div className="pl-2 border-l border-gray-700">
-              <ModeToggle />
-            </div>
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            className="md:hidden text-white p-2 hover:bg-gray-800/50 rounded-lg transition-colors"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <IoClose className="w-6 h-6" /> : <IoMenu className="w-6 h-6" />}
-          </button>
+          <div className="flex items-center gap-2 md:hidden">
+            <ModeToggle />
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-2 text-muted-foreground hover:text-primary transition-colors"
+              aria-label="Toggle menu"
+            >
+              {isOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Mobile Menu */}
-      <div
-        className={`md:hidden fixed inset-0 bg-black/95 backdrop-blur-sm transition-transform duration-300 ease-in-out ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-        style={{ top: "3.75rem" }}
-      >
-        <div className="flex flex-col p-6 space-y-6">
-          {navItems.map((item) => {
-            const itemName = typeof item === "object" ? item.name : item
-            const itemPath = typeof item === "object" ? item.path : `/${item.toLowerCase().replace(/ /g, "-")}`
-            const isActive = pathname === itemPath
-
-            return (
-              <Link
-                key={itemName}
-                href={itemPath}
-                className={`text-lg font-medium transition-all duration-300 ${
-                  isActive ? "text-sea-green" : "text-gray-300 hover:text-white"
-                }`}
-                onClick={() => handleNavItemClick(item)}
-              >
-                {itemName}
-              </Link>
-            )
-          })}
-          <div className="pt-6 space-y-4 border-t border-gray-800">
-            {isSignedIn ? (
-              <Button
-                variant="ghost"
-                className="w-full bg-gray-800/50 text-white hover:bg-gray-700 hover:text-sea-green transition-all duration-300 rounded-lg py-2"
-                onClick={handleSignOut}
-              >
-                Sign Out
-              </Button>
-            ) : (
-              <>
-                <Link href="/sign-in" className="block">
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden border-b border-border/40 bg-background/95 backdrop-blur-md overflow-hidden"
+          >
+            <div className="px-4 py-6 space-y-4 flex flex-col">
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  href={item.path}
+                  onClick={() => setIsOpen(false)}
+                  className={cn(
+                    'block px-4 py-3 text-lg font-medium rounded-xl transition-colors',
+                    pathname === item.path
+                      ? 'bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300'
+                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                  )}
+                >
+                  {item.name}
+                </Link>
+              ))}
+              <div className="pt-6 mt-2 border-t border-border/40 flex flex-col gap-3">
+                {isSignedIn ? (
                   <Button
-                    variant="ghost"
-                    className="w-full bg-gray-800/50 text-white hover:bg-gray-700 hover:text-sea-green transition-all duration-300 rounded-lg py-2"
+                    onClick={handleSignOut}
+                    size="lg"
+                    variant="outline"
+                    className="w-full justify-center"
                   >
-                    Sign In
+                    Sign Out
                   </Button>
-                </Link>
-                <Link href="/sign-up" className="block">
-                  <Button className="w-full bg-sea-green text-white hover:bg-sea-green/80 transition-all duration-300 rounded-lg py-2 shadow-lg shadow-sea-green/20">
-                    Sign Up
-                  </Button>
-                </Link>
-              </>
-            )}
-            <div className="flex justify-center pt-4">
-              <ModeToggle />
+                ) : (
+                  <div className="grid grid-cols-2 gap-3">
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="w-full"
+                      asChild
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <Link href="/sign-in">Log in</Link>
+                    </Button>
+                    <Button
+                      size="lg"
+                      className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-md"
+                      asChild
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <Link href="/sign-up">Get Started</Link>
+                    </Button>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </nav>
-  )
-}
-export default Navbar
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
+  );
+};
+
+export default Navbar;

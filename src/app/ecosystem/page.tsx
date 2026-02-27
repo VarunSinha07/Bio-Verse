@@ -1,203 +1,155 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, AnimatePresence } from 'framer-motion';
-import { Cormorant_Garamond, Waterfall } from 'next/font/google';
-import { Icon } from '@iconify/react';
+import { motion } from 'framer-motion';
+import { Network, Cpu, Activity, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
-const cormorantGaramond = Cormorant_Garamond({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-});
-
-const waterfall = Waterfall({
-  subsets: ['latin'],
-  weight: ['400'],
-});
-
-const ecosystemComponents = [
+const ecosystemFeatures = [
   {
     title: 'Virtual Incubation Hub',
     description:
-      'Simulated environments for HealthTech design, bio-simulation, and prototype testing. AI-powered tools for genetic analysis, virus modeling, and biomarker analysis.',
+      'A complete digital environment for HealthTech design, bio-simulation, and rapid prototype testing. Accelerate your research with our AI-powered genetic analysis tools.',
+    icon: <Network className="h-10 w-10 text-blue-500" />,
+    image: '/img1.jpg',
+    color: 'bg-blue-500/10 text-blue-600',
   },
   {
     title: 'Bio Design Studio',
     description:
-      'Virtual 3D modeling for biochip and wearable device design. Integration with online manufacturing partners for physical prototyping when required.',
+      'Advanced virtual 3D modeling suite for biochip architectures and wearable medical devices. Seamlessly integrate with manufacturing partners for physical prototyping.',
+    icon: <Cpu className="h-10 w-10 text-purple-500" />,
+    image: '/img2.jpg',
+    color: 'bg-purple-500/10 text-purple-600',
   },
   {
     title: 'AI Simulation Platform',
     description:
-      'AI-powered simulations for real-time biological data analytics, pathogen behavior modeling, and drug discovery.',
+      'Harness the power of artificial intelligence to model pathogen behaviors, analyze real-time biological data, and predict drug efficacy before clinical trials.',
+    icon: <Activity className="h-10 w-10 text-teal-500" />,
+    image: '/img1.jpg',
+    color: 'bg-teal-500/10 text-teal-600',
   },
 ];
 
-const heroImages = ['/img1.jpg', '/img2.jpg'];
-
-const EcosystemCarousel = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex(
-        (prevIndex) => (prevIndex + 1) % ecosystemComponents.length
-      );
-    }, 10000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const goToPrevious = () => {
-    setCurrentIndex(
-      (prevIndex) =>
-        (prevIndex - 1 + ecosystemComponents.length) %
-        ecosystemComponents.length
-    );
-  };
-
-  const goToNext = () => {
-    setCurrentIndex(
-      (prevIndex) => (prevIndex + 1) % ecosystemComponents.length
-    );
-  };
-
+export default function EcosystemPage() {
   return (
-    <div className="relative h-[600px] overflow-hidden">
-      <AnimatePresence initial={false}>
-        <motion.div
-          key={currentIndex}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1, ease: 'easeInOut' }}
-          className={`${cormorantGaramond.className} absolute inset-0 flex flex-col md:flex-row items-center gap-12 px-16 py-8`}
-        >
-          <div className="w-full md:w-1/2 space-y-6 order-2 md:order-1">
-            <div className="flex items-center gap-6">
-              <h3
-                className={`${waterfall.className} text-7xl font-semibold text-sea-green`}
-              >
-                {ecosystemComponents[currentIndex].title}
-              </h3>
-            </div>
-            <p className="text-3xl text-white">
-              {ecosystemComponents[currentIndex].description}
-            </p>
-          </div>
-          <div className="w-full md:w-2/5 flex justify-end items-center order-1 md:order-2">
-            <div className="w-96 h-96 relative overflow-hidden rounded-full border-4 border-sea-green">
-              <Image
-                src="/img2.jpg"
-                alt={ecosystemComponents[currentIndex].title}
-                layout="fill"
-                objectFit="cover"
-                className="transition-all duration-300"
-              />
-            </div>
-          </div>
-        </motion.div>
-      </AnimatePresence>
-      <button
-        onClick={goToPrevious}
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 transition-all duration-300"
-        aria-label="Previous component"
-      >
-        <Icon icon="mdi:chevron-left" className="text-3xl" />
-      </button>
-      <button
-        onClick={goToNext}
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 transition-all duration-300"
-        aria-label="Next component"
-      >
-        <Icon icon="mdi:chevron-right" className="text-3xl" />
-      </button>
-    </div>
-  );
-};
-
-export default function Ecosystem() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start'],
-  });
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="relative h-screen overflow-hidden">
-        <AnimatePresence initial={false}>
-          <motion.div
-            key={currentImageIndex}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1, ease: 'easeInOut' }}
-            className="absolute inset-0"
-          >
-            <Image
-              src={heroImages[currentImageIndex] || '/placeholder.svg'}
-              alt={`Ecosystem image ${currentImageIndex + 1}`}
-              layout="fill"
-              objectFit="cover"
-              priority
-            />
-          </motion.div>
-        </AnimatePresence>
-        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="max-w-4xl mx-auto px-4 text-center">
-            <motion.div
-              className={`${cormorantGaramond.className} text-xl md:text-4xl text-white space-y-6`}
-              initial={{ opacity: 0, y: 50 }}
+    <div className="min-h-screen bg-background text-foreground overflow-hidden">
+      {/* Hero Section */}
+      <section className="relative py-24 lg:py-32">
+        <div className="absolute inset-0 bg-gradient-to-b from-teal-50/50 to-transparent dark:from-teal-950/20 pointer-events-none" />
+        <div className="container px-4 md:px-6 relative z-10">
+          <div className="max-w-4xl mx-auto text-center space-y-6">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              transition={{ duration: 0.6 }}
+              className="text-4xl md:text-6xl font-bold tracking-tight"
             >
-              <p>
-                Bioverse integrates a comprehensive digital ecosystem that
-                drives advancements in
-              </p>
-              <p
-                className={`${waterfall.className} text-3xl md:text-7xl font-bold text-white`}
-              >
-                Life Sciences
-              </p>
-              <p
-                className={`${waterfall.className} text-3xl md:text-7xl font-bold text-white`}
-              >
-                HealthTech
-              </p>
-              <p
-                className={`${waterfall.className} text-3xl md:text-7xl font-bold text-white`}
-              >
-                Environmental Technologies
-              </p>
-            </motion.div>
+              The <span className="text-teal-600">BioVerse</span> Ecosystem
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-xl text-muted-foreground leading-relaxed"
+            >
+              An integrated suite of tools designed to revolutionize disparate
+              parts of the biotech lifecycle into one cohesive workflow.
+            </motion.p>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div
-        ref={containerRef}
-        className="bg-black py-16 px-4 sm:px-6 lg:px-8 relative"
-      >
-        <h2
-          className={`${cormorantGaramond.className} text-5xl font-bold text-center text-sea-green mb-16`}
-        >
-          Our Ecosystem Components
-        </h2>
-        <EcosystemCarousel />
-      </div>
+      {/* Features Grid */}
+      <section className="pb-24">
+        <div className="container px-4 md:px-6">
+          <div className="space-y-24">
+            {ecosystemFeatures.map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-100px' }}
+                transition={{ duration: 0.7 }}
+                className={`flex flex-col ${index % 2 === 1 ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-center gap-12 lg:gap-20`}
+              >
+                {/* Image Side */}
+                <div className="w-full lg:w-1/2 relative group">
+                  <div className="absolute inset-0 bg-gradient-to-tr from-teal-600 to-emerald-600 rounded-2xl transform rotate-3 opacity-20 group-hover:rotate-6 transition-transform duration-500 blur-lg" />
+                  <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border aspect-video">
+                    <Image
+                      src={feature.image}
+                      alt={feature.title}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
+                </div>
+
+                {/* Content Side */}
+                <div className="w-full lg:w-1/2 space-y-6">
+                  <div
+                    className={`inline-flex items-center justify-center p-3 rounded-xl ${feature.color}`}
+                  >
+                    {feature.icon}
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-bold">
+                    {feature.title}
+                  </h2>
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    {feature.description}
+                  </p>
+                  <ul className="space-y-3 pt-2">
+                    {[
+                      'Real-time collaboration',
+                      'Secure data capabilities',
+                      'Seamless integration',
+                    ].map((item, i) => (
+                      <li
+                        key={i}
+                        className="flex items-center text-sm font-medium"
+                      >
+                        <div className="h-1.5 w-1.5 rounded-full bg-teal-500 mr-3" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <Button variant="outline" className="mt-4" asChild>
+                    <Link href="/sign-up">
+                      Learn more <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-20 bg-muted/30 border-t border-border">
+        <div className="container px-4 text-center">
+          <h2 className="text-3xl font-bold mb-6">Join the Ecosystem</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
+            Experience the future of biotech innovation. Start your journey with
+            BioVerse today.
+          </p>
+          <div className="flex justify-center gap-4">
+            <Button
+              size="lg"
+              className="bg-teal-600 hover:bg-teal-700 text-white"
+              asChild
+            >
+              <Link href="/sign-up">Get Started</Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link href="/contact">Contact Sales</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
