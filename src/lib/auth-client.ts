@@ -4,7 +4,6 @@ export const authClient = createAuthClient({
   baseURL: process.env.BETTER_AUTH_URL,
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const {
   signIn,
   signUp,
@@ -12,4 +11,5 @@ export const {
   useSession,
   forgetPassword,
   resetPassword,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } = authClient as any;
