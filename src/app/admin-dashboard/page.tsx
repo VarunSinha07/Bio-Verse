@@ -4,10 +4,23 @@ import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { CheckCircle, Minus, X } from 'lucide-react';
 import UserDetailsModal from './components/userDetailsModal';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { toast } from '@/hooks/use-toast';
 
 // Define interfaces first to avoid reference errors
@@ -61,7 +74,7 @@ interface BasicUser {
 const AdminDashboard = () => {
   type TabStatus = 'stage2' | 'stage3' | 'stage4' | 'incubation';
   type FilterStatus = 'all' | 'approved' | 'pending' | 'declined';
-  
+
   const [selectedTab, setSelectedTab] = useState<TabStatus>('stage2');
   const [filter, setFilter] = useState<FilterStatus>('all');
   const [users, setUsers] = useState<BasicUser[]>([]);
@@ -70,35 +83,41 @@ const AdminDashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Define the status mappings for each tab
-  const tabStatusMap = React.useMemo(() => ({
-    stage2: 'Applied for Stage 2',
-    stage3: 'Applied for Stage 3',
-    stage4: 'Applied for Stage 4',
-    incubation: 'In Incubation / Pre-incubation',
-  }), []);
-
-  
+  const tabStatusMap = React.useMemo(
+    () => ({
+      stage2: 'Applied for Stage 2',
+      stage3: 'Applied for Stage 3',
+      stage4: 'Applied for Stage 4',
+      incubation: 'In Incubation / Pre-incubation',
+    }),
+    []
+  );
 
   interface FetchUsersProps {
     status: string;
     filter: FilterStatus;
   }
 
-  const fetchUsers = React.useCallback(async ({ status, filter }: FetchUsersProps): Promise<void> => {
-    setLoading(true);
-    try {
-      const response = await fetch(`/api/admin/users?status=${encodeURIComponent(status)}&filter=${filter}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch users');
+  const fetchUsers = React.useCallback(
+    async ({ status, filter }: FetchUsersProps): Promise<void> => {
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `/api/admin/users?status=${encodeURIComponent(status)}&filter=${filter}`
+        );
+        if (!response.ok) {
+          throw new Error('Failed to fetch users');
+        }
+        const data = (await response.json()) as BasicUser[];
+        setUsers(data);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      } finally {
+        setLoading(false);
       }
-      const data = await response.json() as BasicUser[];
-      setUsers(data);
-    } catch (error) {
-      console.error('Error fetching users:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   useEffect(() => {
     fetchUsers({ status: tabStatusMap[selectedTab], filter });
@@ -110,7 +129,7 @@ const AdminDashboard = () => {
       if (!response.ok) {
         throw new Error('Failed to fetch user details');
       }
-      const data = await response.json() as User;
+      const data = (await response.json()) as User;
       setSelectedUser(data);
       setIsModalOpen(true);
     } catch (error) {
@@ -118,16 +137,18 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleApproveRequest = async (userId: string, action: 'approve' | 'decline'): Promise<void> => {
+  const handleApproveRequest = async (
+    userId: string,
+    action: 'approve' | 'decline'
+  ): Promise<void> => {
     try {
-     
       await fetchUsers({ status: tabStatusMap[selectedTab], filter });
     } catch (error) {
       console.error(`Error ${action}ing user request:`, error);
     }
   };
   const handleAllocateRequest = async (
-    userId: string, 
+    userId: string,
     action: 'incubation' | 'pre-incubation' | 'decline'
   ): Promise<void> => {
     try {
@@ -147,26 +168,26 @@ const AdminDashboard = () => {
       await fetchUsers({ status: tabStatusMap[selectedTab], filter });
 
       toast({
-        title: "Allocation Successful",
+        title: 'Allocation Successful',
         description: `User has been ${
-          action === 'incubation' 
-            ? 'allocated to Incubation' 
-            : action === 'pre-incubation' 
-            ? 'allocated to Pre-Incubation' 
-            : 'declined'
+          action === 'incubation'
+            ? 'allocated to Incubation'
+            : action === 'pre-incubation'
+              ? 'allocated to Pre-Incubation'
+              : 'declined'
         }.`,
-        variant: action === 'decline' ? "destructive" : "default"
+        variant: action === 'decline' ? 'destructive' : 'default',
       });
     } catch (error) {
       console.error(`Error allocating user:`, error);
       toast({
-        title: "Error",
-        description: "There was an error allocating the user. Please try again.",
-        variant: "destructive"
+        title: 'Error',
+        description:
+          'There was an error allocating the user. Please try again.',
+        variant: 'destructive',
       });
     }
   };
-
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -184,15 +205,21 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-6 pt-28">
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
-      
-      <Tabs defaultValue="stage2" value={selectedTab} onValueChange={(value) => setSelectedTab(value as TabStatus)}>
+
+      <Tabs
+        defaultValue="stage2"
+        value={selectedTab}
+        onValueChange={(value) => setSelectedTab(value as TabStatus)}
+      >
         <TabsList className="grid grid-cols-4 mb-8">
           <TabsTrigger value="stage2">Applied for Stage 2</TabsTrigger>
           <TabsTrigger value="stage3">Applied for Stage 3</TabsTrigger>
           <TabsTrigger value="stage4">Applied for Stage 4</TabsTrigger>
-          <TabsTrigger value="incubation">In Incubation / Pre-Incubation</TabsTrigger>
+          <TabsTrigger value="incubation">
+            In Incubation / Pre-Incubation
+          </TabsTrigger>
         </TabsList>
 
         {Object.entries(tabStatusMap).map(([tab, status]) => (
@@ -201,8 +228,8 @@ const AdminDashboard = () => {
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>{status}</CardTitle>
                 <div className="w-48">
-                  <Select 
-                    value={filter} 
+                  <Select
+                    value={filter}
                     onValueChange={(value) => setFilter(value as FilterStatus)}
                   >
                     <SelectTrigger>
@@ -221,7 +248,9 @@ const AdminDashboard = () => {
                 {loading ? (
                   <div className="flex justify-center py-8">Loading...</div>
                 ) : users.length === 0 ? (
-                  <div className="text-center py-8">No users found with this status</div>
+                  <div className="text-center py-8">
+                    No users found with this status
+                  </div>
                 ) : (
                   <Table>
                     <TableHeader>
@@ -229,7 +258,9 @@ const AdminDashboard = () => {
                         <TableHead>Name</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>Idea Title</TableHead>
-                        <TableHead className="text-center">Request Status</TableHead>
+                        <TableHead className="text-center">
+                          Request Status
+                        </TableHead>
                         <TableHead>Actions</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -238,15 +269,17 @@ const AdminDashboard = () => {
                         <TableRow key={user.id}>
                           <TableCell>{user.name || 'N/A'}</TableCell>
                           <TableCell>{user.email}</TableCell>
-                          <TableCell>{user.questionnaire?.ideaTitle || 'N/A'}</TableCell>
+                          <TableCell>
+                            {user.questionnaire?.ideaTitle || 'N/A'}
+                          </TableCell>
                           <TableCell className="text-center">
                             <div className="flex justify-center">
                               {getRequestStatusIcon(user)}
                             </div>
                           </TableCell>
                           <TableCell>
-                            <Button 
-                              variant="outline" 
+                            <Button
+                              variant="outline"
                               onClick={() => handleViewDetails(user.id)}
                             >
                               View Details
@@ -265,11 +298,13 @@ const AdminDashboard = () => {
 
       {selectedUser && (
         <UserDetailsModal
-          isOpen={isModalOpen} 
+          isOpen={isModalOpen}
           onClose={closeModal}
           user={selectedUser}
           onApproveRequest={handleApproveRequest}
-          onAllocateRequest={selectedTab === 'stage4' ? handleAllocateRequest : undefined}
+          onAllocateRequest={
+            selectedTab === 'stage4' ? handleAllocateRequest : undefined
+          }
         />
       )}
     </div>
